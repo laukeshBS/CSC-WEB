@@ -1,0 +1,77 @@
+<section class="partner">
+  <div class="container">
+        <div class="financial-head">
+        <h3>BFA Registration</h3>
+        <!-- <p>Only for new Financial Institutions</p> -->
+     </div>
+</div>
+</section>
+<div class="partner">
+  <div class="container">
+    <div class="become-partner">
+      <div class="row justify-content-center">
+  <div class="col-md-2"></div>
+        <div class="col-md-4">
+       <h4 *ngIf="!otpSent">Phone Verification</h4>
+         <h4 *ngIf="otpSent">Enter OTP</h4>
+        </div>
+      <div class="col-md-4">
+        <div class="otp-container">
+
+          <div *ngIf="!otpSent" class="form-group">
+            <label>Enter Phone Number</label>
+            <input
+              type="text"
+              maxlength="14"
+              [(ngModel)]="phone" (keypress)="keyPress($event)"
+              (input)="formatPhone()" (keypress)="onlyNumberInput($event)"
+            />
+            <button (click)="sendOtp()" [disabled]="loading">
+              {{ loading ? 'Sending...' : 'Send OTP' }}
+            </button>
+          </div>
+
+          <!-- OTP STEP -->
+          <div *ngIf="otpSent" class="form-group">
+              <p *ngIf="phone"> {{ getMaskedPhone(phone)}}</p>
+            <label>Enter 6-digit OTP</label>
+
+            <div class="otp-inputs">
+              <input
+                *ngFor="let box of otpBoxes; let i = index"
+                type="text"
+                maxlength="1"
+                [(ngModel)]="otpDigits[i]"
+                [disabled]="otpExpired"
+                (input)="onOtpInput($event, i)"
+                (keydown.backspace)="onOtpBackspace($event, i)"
+              />
+            </div>
+
+            <button (click)="validateOtp()" [disabled]="loading || otpExpired">
+              {{ loading ? 'Verifying...' : 'Verify OTP' }}
+            </button>
+
+            <!-- TIMER -->
+            <div class="timer" *ngIf="!otpExpired">
+              Time remaining:
+              <span>{{ formatTime(timer) }}</span>
+            </div>
+
+            <!-- EXPIRED -->
+            <div class="error" *ngIf="otpExpired">
+              OTP expired.
+              <a href="#" (click)="resendOtp(); $event.preventDefault()">Resend OTP</a>
+            </div>
+
+          </div>
+
+          <p  class="message {{ error?error:'text-success' }}">{{ message }}</p>
+
+        </div>
+
+         </div>
+ <div class="col-md-2"></div>
+      </div>
+ </div>
+</div>

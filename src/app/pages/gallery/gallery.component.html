@@ -1,0 +1,45 @@
+<h2 style="text-align: center;margin: 18px;">Gallery</h2>
+<div class="gallery">
+  <div class="row">
+    <!-- <div *ngIf="!galleryLoaded">Loading galleries...</div>
+   <div *ngIf="galleryLoaded && galleryItems.length === 0">No gallery found</div> -->
+    <div
+
+      *ngFor="let gallery of galleryItems; trackBy: trackById"
+      class="col-md-4"
+      style="margin-bottom: 31px;"
+    >
+      <div
+        class="gallery-flex"
+        (click)="displayGalleryById(gallery.id)"
+        [id]="'gallery_flex_' + gallery.id"
+        [attr.data-description]="getSanitizedHtml(gallery.description)"
+
+      >
+        <div class="gallery-category">
+          <div
+            *ngFor="let image of gallery.images"
+            class="gallery-item"
+            [ngClass]="'gallery-item' + (image.index + 1)"
+          >
+            <img [src]="image.src" [alt]="image.alt" class="img-fluid" />
+            <div class="image-info">{{ image.alt }}</div>
+          </div>
+        </div>
+        <div [innerHTML]="getSanitizedHtml(gallery.description)" class="long-text read-more mb-0">
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+
+</div>
+<div class="lightbox" id="lightbox" *ngIf="isLightboxOpen" [ngStyle]="{ display: 'flex' }">
+  <button class="close-btn" (click)="closeLightbox()">×</button>
+  <button class="lightbox-button prev-btn" (click)="prevImage()">&lt;</button>
+  <img [src]="lightboxImage.src"  />
+  <div class="image-description">{{ lightboxGalleryDescription }}</div>
+  <button class="lightbox-button next-btn" (click)="nextImage()">&gt;</button>
+</div>

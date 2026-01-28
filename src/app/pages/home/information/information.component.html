@@ -1,0 +1,29 @@
+<section *ngIf="information" class="imp-info">
+  <div class="container">
+    <div class="bank-head">
+      <h6>Important </h6>
+      <h5> Information</h5>
+    </div>
+<owl-carousel-o [options]="carouselOptions">
+  <ng-template carouselSlide
+ *ngFor="let info of information; let i = index trackBy: trackById">
+
+    <div class="item">
+      <div class="loan-information">
+        <div class="info-icon">
+          <img
+            [src]="'assets/assetsWeb/images/' + infoIcons[i % 4]"
+            alt="Info Icon"
+            class="info-img" loading="lazy"
+          >
+        </div>
+        <div class="info-text">
+          <p [innerHTML]="getSanitizedHtml(info.post_content)"></p>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+</owl-carousel-o>
+</div>
+</section>

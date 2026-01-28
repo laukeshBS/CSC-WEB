@@ -1,0 +1,31 @@
+<section *ngIf="faqs" class="questioning">
+  <div class="container">
+    <div class="frequent-ques-head">
+      <h6>GET ANSWERS</h6>
+      <h5>Frequently Asked Questions</h5>
+    </div>
+    <div class="frequent-ques Frequently">
+      <div class="accordion" id="faq">
+        <div *ngFor="let faq of displayedFaqs; index as i; trackBy: trackById" class="card">
+          <div class="card-header" [id]="'faqhead' + i">
+            <a class="btn btn-header-link" (click)="toggleFaq(i)">
+              {{ faq.post_title }}
+            </a>
+          </div>
+          <div
+            [id]="'faq' + i"
+            class="collapse"
+            [class.show]="isFaqOpen(i)"
+            [attr.aria-labelledby]="'faqhead' + i"
+            data-parent="#faq"
+          >
+            <div class="card-body"  [innerHTML]="getSanitizedHtml(faq.post_content)" ></div>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-3">
+        <button *ngIf="!showAll" class="btn  btn-submit" (click)="showMore()">Read More</button>
+      </div>
+    </div>
+  </div>
+</section>

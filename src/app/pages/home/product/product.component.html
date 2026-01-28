@@ -1,0 +1,20 @@
+<section class="finacnical-inst" id="product">
+  <div class="container-fluid">
+    <h6>Products from</h6>
+    <h4>Top Banks & Financial Institutions</h4>
+    <div class="finanicail-slider">
+      <owl-carousel-o [options]="carouselOptions">
+        <ng-template carouselSlide *ngFor="let loan of loans">
+          <div class="item">
+            <div class="Financial-logo">
+              <div class="Financial-logo-img">
+                <img [src]="loan.imgSrc" loading="lazy" [alt]="loan.altText">
+              </div>
+              <div class="fin-cnt">{{ loan.title }}</div>
+            </div>
+          </div>
+        </ng-template>
+      </owl-carousel-o>
+    </div>
+  </div>
+</section>

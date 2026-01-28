@@ -1,0 +1,299 @@
+@media only screen and (max-width:767px) {
+
+    .bg-light{
+        width: 100%;
+        padding: 10px 10px 10px;
+    }
+
+    form.outer-form {
+        margin-top: 20px;
+    }
+
+    .question {
+        width: 100%;
+        display: inline-block;
+        padding: 10px 0;
+    }
+
+    .contact-left {
+        width: 100%;
+        display: inline-block;
+    }
+
+    .contact-right {
+        width: 100%;
+        display: inline-block;
+    }
+
+
+    .submit-btn {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+
+    .bank-list {
+        border: 1px solid #d3d3d3;
+        padding: 16px 10px;
+        display: inline-block;
+        float: left;
+        margin-left: -2px;
+        margin-bottom: -4px;
+    }
+
+    .loan-information {
+        width: 100%;
+        border: 1px solid #ffffff;
+        display: inline-block;
+        text-align: justify;
+    }
+
+    .register-outer {
+        overflow: scroll;
+    }
+
+    ul.company {
+        padding: 0;
+    }
+
+    ul.footer-links {
+        padding: 0;
+    }
+
+    img.img-location {
+        width: 100%;
+        height: auto;
+        padding: 10px 0 10px;
+    }
+    .t-left.t-right {
+        text-align: left;
+    }
+    .midle-right {
+        /* text-align: left; */
+        margin: 10px 0;
+        margin-top: -60px;
+    }
+
+    .content-wrpers h3 {
+        font-size: 18px;
+        line-height: 24px;
+        margin: 2px 0;
+        font-weight: 700;
+    }
+    .finacnical-inst h4 {
+        font-size: 18px;
+        margin: 0;
+    }
+
+    .cst {
+        margin: 6px 0 0;
+    }
+    .cs img {
+        width: 60px;
+    }
+    .cs {
+        height: auto;
+        padding: 16px 0;
+    }
+    .bank-head h5 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 8px 0 5px;
+    }
+    .bank-head h6 {
+        font-size: 16px;
+    }
+    /* .Testimonials-hdr .nav-tabs {
+        width: 81%;
+    } */
+    .financial-head h3{
+        font-size: 21px;
+    }
+    .become-partner {
+        padding: 20px;
+    }
+    .question p {
+        width: auto;
+        }
+    .form-group input{
+    width: 100%;
+    }
+    button.btn-submit{
+        width: 100%;
+    }
+    .customer-s {
+        min-height: auto;
+        padding: 26px 0;
+    }
+    .cst h3 {
+        font-size: 24px;
+        font-weight: 500;
+        padding: 5px 0 0;
+    }
+
+    .navbar-light .navbar-toggler {
+        background: #fff;
+        border: none;
+    }
+
+    .csc-search input.form-control {
+        width: 70%;
+    }
+    .navbar-light .navbar-nav .nav-link {
+        font-size: 15px;
+    }
+
+    button.get-q {
+        top: 0;
+        right: 0px !important;
+        border-radius: 0px;
+      /* // padding: 16px 40px 16px 30px; */
+    }
+    .h-img {
+        height: 180px;
+        background: #f0faf9;
+    }
+
+    .men {
+        position: absolute;
+        top: 22px;
+        right: 0;
+        left: 10%;
+    }
+    .men img {
+        width: 85% !important;
+    }
+    .h-content {
+        position: absolute;
+        top: 52%;
+        width: 90%;
+        left: 10%;
+    }
+        .top-bar li {
+            font-size: 14px;
+        }
+        .form-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #000000;
+        }
+        .loan-img {
+
+          margin-top: 25%;
+      }
+     .become-partner form {
+        margin-top: 20%;
+      }
+      img.partner-img {
+        left: -7px;
+    }
+
+}
+
+/* Media Queries for Responsiveness */
+
+/* Large Tablets and Small Laptops */
+@media only screen and (max-width: 1024px) {
+    .gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .read-more {
+      font-size: 11px;
+      padding: 4px 8px;
+    }
+    .lightbox .image-description {
+      color: #fff;
+      font-size: 14px;
+      margin-top: 10px;
+      /* text-align: center; */
+      padding: 0px 10px 0px 10px;
+  }
+  }
+
+  /* Tablets and Large Phones */
+  @media only screen and (max-width: 767px) {
+    .gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .read-more {
+      font-size: 10px;
+      padding: 4px 6px;
+    }
+    .lightbox .image-description {
+      color: #fff;
+      font-size: 14px;
+      margin-top: 10px;
+      /* text-align: center; */
+      padding: 0px 10px 0px 10px;
+  }
+
+  }
+
+  /* Small Phones */
+  @media only screen and (max-width: 480px) {
+    .gallery {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .read-more {
+      font-size: 9px;
+      padding: 3px 5px;
+    }
+    .lightbox .image-description {
+      color: #fff;
+      font-size: 14px;
+      margin-top: 10px;
+      /* text-align: center; */
+      padding: 0px 10px 0px 10px;
+  }
+  }
+
+  /* iOS and Android Specific Fixes */
+  @media screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
+    .gallery-item img {
+      border-radius: 6px;
+    }
+    .read-more {
+      font-size: 10px;
+      padding: 4px 6px;
+    }
+    .lightbox .image-description {
+      color: #fff;
+      font-size: 14px;
+      margin-top: 10px;
+      /* text-align: center; */
+      padding: 0px 10px 0px 10px;
+  }
+
+  }
+
+  @media screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
+    .gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .read-more {
+      font-size: 11px;
+      padding: 4px 8px;
+    }
+    .lightbox .image-description {
+      color: #fff;
+      font-size: 14px;
+      margin-top: 10px;
+      /* text-align: center; */
+      padding: 0px 10px 0px 10px;
+  }
+  button.get-q {
+    right: -205px; /* Adjust position for smaller devices */
+    font-size: 13px;
+    /* padding: 10px 20px; */
+  }
+  }
+  @media (min-width: 992px) {
+    .navbar-expand-lg .navbar-nav .nav-link {
+
+      padding: 7px 24px !important;
+      font-size: 15px !important;
+    }
+  }
+

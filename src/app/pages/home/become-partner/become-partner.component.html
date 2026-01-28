@@ -1,0 +1,81 @@
+<section class="partner">
+  <div class="container">
+    <div class="become-partner">
+      <div class="row">
+        <div class="col-md-5">
+          <div class="financial-head">
+            <h3>Become a Partner</h3>
+            <p>Only for new Financial Institutions</p>
+          </div>
+          <!-- <div class="question">
+            <p>call us for any questions <span>+123 456 56 67</span></p>
+          </div> -->
+          <div class="question">
+            <p>Mail us for any questions <span>{{ins}}</span></p>
+          </div>
+          <div class="loan-img">
+            <img src="assets/assetsWeb/images/img-01.png" alt="" class="partner-img">
+          </div>
+        </div>
+        <div class="col-md-7">
+          <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+            <div class="form-group contact-left">
+              <label for="name">Contact Person Full Name <span>*</span></label>
+              <input type="text" class="form-control" id="name" formControlName="name" maxlength="50" autocomplete="off" />
+              <div *ngIf="f['name'].invalid && f['name'].touched" class="text-danger">
+                Full Name is required and must be under 50 characters.
+              </div>
+            </div>
+
+            <div class="form-group contact-right">
+              <label for="designation">Designation <span>*</span></label>
+              <input type="text" class="form-control" id="designation" formControlName="designation" maxlength="50" autocomplete="off" />
+              <div *ngIf="f['designation'].invalid && f['designation'].touched" class="text-danger">
+                Designation is required and must be under 50 characters.
+              </div>
+            </div>
+
+            <div class="form-group contact-left">
+              <label for="email">Email ID <span>*</span></label>
+              <input type="email" class="form-control" id="email" formControlName="email" autocomplete="off" />
+              <div *ngIf="f['email'].invalid && f['email'].touched" class="text-danger">
+                Please enter a valid email.
+              </div>
+            </div>
+
+            <div class="form-group contact-right">
+              <label for="mobile">Mobile <span>*</span></label>
+              <input type="text" class="form-control" id="mobile" formControlName="mobile" maxlength="10" autocomplete="off" />
+              <div *ngIf="f['mobile'].invalid && f['mobile'].touched" class="text-danger">
+                Mobile is required and must be 10 digits.
+              </div>
+            </div>
+
+            <div class="form-group contact">
+              <label for="institution">Institution Name <span>*</span></label>
+              <input type="text" class="form-control" id="institution" formControlName="institution" maxlength="100" autocomplete="off" />
+              <div *ngIf="f['institution'].invalid && f['institution'].touched" class="text-danger">
+                Institution name is required and must be under 100 characters.
+              </div>
+            </div>
+
+            <div class="form-group contact">
+              <label for="message">Message <span>*</span></label>
+              <textarea class="form-control" id="message" formControlName="message" maxlength="500" autocomplete="off"></textarea>
+              <div *ngIf="f['message'].invalid && f['message'].touched" class="text-danger">
+                Message is required and must be under 500 characters.
+              </div>
+            </div>
+
+            <div class="submit-btn">
+              <button type="submit" class="btn btn-submit" [disabled]="contactForm.invalid">SUBMIT NOW</button>
+            </div>
+          </form>
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

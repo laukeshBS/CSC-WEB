@@ -1,0 +1,103 @@
+<section style="margin: 20px;">
+  <h2 style="text-align: center;">EMI Calculator</h2>
+  <div class="container" >
+      <div class="row">
+
+<div class="container mt-4">
+  <div class="row">
+    <!-- Input Section -->
+    <div class="col-md-5 rangeNo">
+      <div class="rangeNo1">
+
+        <!-- Loan Amount -->
+        <div class="mb-3">
+          <label>
+            Loan Amount
+            <span class="rightLabel">₹
+              <input type="text"
+                     min="50000"
+                     max="50000000"
+                     [(ngModel)]="loanAmount"
+                     class="number_only"
+                     (input)="onInputChange()"
+                     (keypress)="allowOnlyNumbers($event)">
+            </span>
+          </label>
+          <input type="range"
+                 min="50000"
+                 max="50000000"
+                 step="10000"
+                 [(ngModel)]="loanAmount"
+                 (input)="onInputChange()"
+                 class="form-range">
+        </div>
+
+        <!-- Interest Rate -->
+        <div class="mb-3">
+          <label>
+            Interest Rate (p.a)
+            <span class="rightLabel">
+              <input type="text"
+                     min="1"
+                     max="30"
+                     [(ngModel)]="interestRate"
+                     class="number_only"
+                     (input)="onInputChange()"
+                     (keypress)="allowOnlyNumbers($event)"> %
+            </span>
+          </label>
+          <input type="range"
+                 min="1"
+                 max="30"
+                 step="0.1"
+                 [(ngModel)]="interestRate"
+                 (input)="onInputChange()"
+                 class="form-range">
+        </div>
+
+        <!-- Loan Tenure -->
+        <div class="mb-3">
+          <label>
+            Loan Tenure (Years)
+            <span class="rightLabel">
+              <input type="text"
+                     min="1"
+                     max="30"
+                     [(ngModel)]="loanTenure"
+                     class="number_only"
+                     (input)="onInputChange()"
+                     (keypress)="allowOnlyNumbers($event)"> Yr
+            </span>
+          </label>
+          <input type="range"
+                 min="1"
+                 max="30"
+                 step="1"
+                 [(ngModel)]="loanTenure"
+                 (input)="onInputChange()"
+                 class="form-range">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="col-md-4 rangeNo">
+      <canvas id="emiChart"></canvas>
+    </div>
+
+    <!-- Result Section -->
+    <div class="col-md-3">
+      <div class="mt-4 details">
+        <p><strong>Monthly EMI:</strong> {{ formattedEMI }}</p>
+        <p><strong>Principal Amount:</strong> {{ formatCurrency(loanAmount) }}</p>
+        <p><strong>Total Interest:</strong> {{ formattedInterest }}</p>
+        <p><strong>Total Payment:</strong> {{ formattedPayment }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+</section>

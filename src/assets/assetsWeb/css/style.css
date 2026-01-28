@@ -1,0 +1,477 @@
+
+section.partner {
+    margin: 20px 0;
+}
+
+.become-partner {
+    background: #F0FAF9;
+    padding: 60px;
+}
+
+.financial-head h3 {
+    color: #2A457F;
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.financial-head p {
+    font-size: 14px;
+    font-weight: 300;
+    color: #606060;
+}
+
+section.questioning {
+    margin: 60px 0 80px;
+    display: inline-block;
+    width: 100%;
+}
+
+.question {
+    width: 100%;
+    display: inline-block;
+    padding: 20px 0;
+}
+
+.question p {
+    font-size: 14px;
+    font-weight: 300;
+    width: 50%;
+    display: inline-block;
+    color: #606060;
+}
+
+.question span {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+}
+
+.loan-img {
+    padding: 20px 0;
+}
+
+.contact-left {
+    width: 49%;
+    display: inline-block;
+}
+
+.contact-right {
+    width: 50%;
+    display: inline-block;
+}
+
+label span {
+    color: #fd0303;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 400;
+    color: #606060;
+}
+
+.form-group input {
+    border-bottom: 1px solid #d1d1d1 !important;
+    border: none;
+    background: #F0FAF9;
+    width: 90%;
+    border-radius: 0px;
+    padding: 5px;
+    font-size: 13px;
+}
+
+.form-group input:hover {
+    border-bottom: 1px solid #d1d1d1 !important;
+    border: none;
+    background: #F0FAF9;
+    border-radius: 0px;
+}
+
+textarea.form-control {
+    border-bottom: 1px solid #d1d1d1 !important;
+    border: none;
+    background: #F0FAF9;
+    width: 90%;
+    border-radius: 0px;
+}
+
+textarea.form-control:hover {
+    border-bottom: 1px solid #d1d1d1 !important;
+    border: none;
+    background: #F0FAF9;
+    border-radius: 0px;
+}
+
+.submit-btn {
+    margin: 40px 0 0;
+}
+
+button.btn-submit {
+    padding: 12px 50px;
+    background: #2A457F;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.5);
+}
+
+img.partner-img {
+    position: absolute;
+    bottom: -60px;
+    left: -15px;
+}
+
+section.footer {
+    background: #06142A;
+    padding: 35px 0 0;
+    display: inline-block;
+    width: 100%;
+}
+
+ul.address {
+    padding: 0;
+}
+
+ul.address li {
+    color: #A2C0FF;
+    font-size: 14px;
+    font-weight: 400;
+    list-style: none;
+    padding: 5px 0;
+}
+
+ul.address li span {
+    padding: 0 5px 0 0;
+}
+
+ul.address p {
+    color: #EDEDED;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 21px;
+    text-align: justify;
+    padding: 2px 0;
+    margin: 0 0 8px;
+}
+ul.company {
+    list-style: none;
+}
+
+ul.company h6 {
+    color: #A2C0FF;
+    border-bottom: 2px solid #A2C0FF;
+    padding: 4px 0 12px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+ul.footer-links {
+    list-style: none;
+    margin: 26px 0;
+}
+
+ul.footer-links h6 {
+    color: #A2C0FF;
+    border-bottom: 2px solid #A2C0FF;
+    padding: 4px 0 12px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+img.img-location {
+    width: 250px;
+    height: 250px;
+    padding: 10px 0;
+}
+
+ul.company a {
+    color: #EDEDED;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+li.sprt-loan span {
+    padding: 0 5px 0 0;
+    color: #fff;
+}
+
+ul.company li span {
+    padding: 0 5px 0 0;
+}
+
+ul.footer-links li a {
+    display: inline-block;
+    float: left;
+    width: 20%;
+    color: #fff;
+    font-size: 19px;
+}
+
+hr.footer-line {
+    border-bottom: 1px solid #EDEDED;
+}
+
+.privacy-policy {
+    color: #EDEDED;
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: none;
+    margin: 0;
+    border-top: 1px solid #374458;
+    padding: 12px 0;
+    text-align: center;
+}
+
+section.top-banks {
+    margin: 20px 0;
+}
+
+.banks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.bank-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bank-logo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+
+.bank-list {
+  border: 1px solid #d3d3d3;
+  padding: 16px 10px;
+  display: inline-block;
+  float: left;
+  margin-left: -2px;
+  margin-bottom: -4px;
+}
+
+img.bank-logo {
+    width: 100px;
+    height: 60px;
+}
+
+.bank-head {
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.bank-head h5 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 12px 0 0;
+    color: #232323;
+}
+
+.bank-head h6 {
+    font-size: 18px;
+    color: #606060;
+    font-weight: 500;
+}
+
+button.btn-ques:hover {
+    text-decoration: none;
+}
+
+.register-head {
+    background: #fff;
+
+}
+
+.register-outer {
+    border: none;
+    border-bottom: 1px solid #d3d3d3;
+}
+
+.frequent-ques-head {
+    text-align: center;
+}
+
+.frequent-ques-head h6 {
+    color: #2A457F;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 15px 0;
+}
+
+.frequent-ques-head h5 {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+button.btn-ques {
+    color: #2A457F;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.acord-text {
+    font-size: 14px;
+    font-weight: 400;
+    padding: 10px 0 0;
+    margin: 0;
+    min-height: auto !important;
+}
+
+.bajaj-finance {
+    width: 100%;
+    display: inline-block;
+}
+
+.loan-information:hover {
+    box-shadow: 0px 0px 5px #ededed;
+    border-radius: 8px;
+}
+
+img.info-img {
+    width: auto !important;
+}
+
+.loan-information {
+    width: 100%;
+    padding: 10px;
+    float: left;
+    margin: 10px;
+    border: 1px solid #ffffff;
+}
+
+section.imp-info {
+    margin: 20px 0;
+}
+
+.info-icon {
+    padding: 20px 0;
+}
+
+.info-text p {
+    color: #606060;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+
+}
+.company li {
+    display: inline-block;
+    width: 100%;
+    margin: 4px 0;
+}
+
+
+.accordion>.card>.card-header {
+    border-radius: 0;
+    margin: 0;
+    padding: 0;
+}
+
+button.btn-ques {
+    color: #2A457F;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    padding: 10px 0px;
+}
+
+
+
+
+
+.Frequently .card .card-header {
+    border: 0;
+    border-radius: 2px;
+    padding: 0;
+    background: transparent;
+}
+
+.Frequently .card .card-header .btn-header-link {
+    display: block;
+    text-align: left;
+    color: #2a457f;
+    padding: 6px 16px;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.Frequently .card .card-header .btn-header-link:after {
+    content: "\f107";
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    float: right;
+}
+
+
+.Frequently .card .card-header .btn-header-link.collapsed:after {
+    content: "\f106";
+}
+
+
+
+.Frequently .card .collapse {
+    border: 0;
+}
+
+.Frequently .card .collapse.show {
+    line-height: 30px;
+    color: #222;
+}
+.accordion .card {
+    overflow: hidden;
+    border-bottom: 1px solid #d3d3d3 !important;
+    border: none;
+    padding: 10px 0;
+}
+.card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 0 16px !important;
+    font-size: 15px
+}
+
+.btn.focus,
+.btn:focus {
+    outline: 0;
+    box-shadow: none
+}
+
+.imp-info .owl-nav.disabled {
+    display: block;
+}
+
+.imp-info button.owl-next, .imp-info button.owl-prev {
+    background: #425b66;
+    height: 40px;
+    width: 40px;
+}
+
+.imp-info button.owl-next,
+.imp-info button.owl-prev {
+    background: #425b66 !important;
+    height: 40px;
+    width: 40px;
+    color: #fff !important;
+}
+
+.imp-info span {
+    font-size: 24px;
+    line-height: 22px;
+    font-weight: 500;
+}
+.owl-theme .owl-dots .owl-dot {
+  display: none !important;
+
+}

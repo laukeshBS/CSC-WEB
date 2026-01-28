@@ -1,0 +1,76 @@
+  /* Responsive Design */
+  @media (max-width: 768px) {
+
+    .rangeNo {
+        border-right: none !important ;
+     }
+     .details{
+           padding-top: 5% !important;
+       }
+   }
+
+   @media (max-width: 480px) {
+
+       .rangeNo {
+           border-right: none !important ;
+       }
+       .details{
+           padding-top: 5% !important;
+       }
+   }
+   p {
+       line-height: 2.6;
+   }
+   .rangeNo{
+       border-right: 1px solid #42303030;
+   }
+   .details{
+       padding-top: 25%;
+   }
+   h2 {
+     text-align: center;
+     margin-bottom: 20px;
+   }
+   label {
+     display: block;
+     margin: 30px 0;
+   }
+   .rightLabel {
+     background-color: #8fdd85c9;
+     padding: 6px 10px;
+     color: #000;
+     font-weight: bold;
+     border-radius: 5px;
+     float: right;
+   }
+   input[type="text"] {
+     border: none;
+     background: transparent;
+     text-align: right;
+     width: 83px;
+     outline: none;
+   }
+   a.cibil-float.emi {
+        display: none !important;
+    }
+   input[type="range"] {
+     width: 100%;
+   }
+   .multipleRangeWrapper {
+     display: flex;
+     justify-content: space-between;
+     padding: 0 10px;
+     margin-top: -10px;
+   }
+   .multipleRangeWrapper label {
+     font-size: 0.9em;
+   }
+   canvas {
+     max-width: 100%;
+     margin: 20px auto;
+     display: block;
+   }
+   .loan-against-form-wrap {
+
+       min-height: 0px;
+   }

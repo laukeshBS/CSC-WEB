@@ -1,0 +1,84 @@
+<section  *ngIf="testimonials" class="Testimonials-wrapper">
+  <h6 class="title-h">Customers & Partners</h6>
+  <h4 class="title-sub">Testimonials</h4>
+  <div class="container">
+    <div class="row">
+      <div class="Testimonials">
+        <nav class="col-md-12 Testimonials-hdr">
+          <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link"
+               [ngClass]="{'active': selectedTab === 'Customer'}"
+               (click)="setTab('Customer')"
+               id="nav-home-tab"
+               data-bs-toggle="tab"
+
+               role="tab"
+               aria-controls="nav-home"
+               aria-selected="true">Customer</a>
+
+            <a class="nav-item nav-link"
+               [ngClass]="{'active': selectedTab === 'VLEs'}"
+               (click)="setTab('VLEs')"
+               id="nav-profile-tab"
+               data-bs-toggle="tab"
+
+               role="tab"
+               aria-controls="nav-profile"
+               aria-selected="false">VLEs</a>
+
+            <a class="nav-item nav-link"
+               [ngClass]="{'active': selectedTab === 'Partner'}"
+               (click)="setTab('Partner')"
+               id="nav-contact-tab"
+               data-bs-toggle="tab"
+               role="tab"
+               aria-controls="nav-contact"
+               aria-selected="false">Partner</a>
+          </div>
+        </nav>
+
+        <div class="tab-content" id="nav-tabContent">
+          <div class="tab-pane fade show active"
+               [ngClass]="{'show active': selectedTab === selectedTab}"
+               id="nav-home"
+               role="tabpanel"
+               aria-labelledby="nav-home-tab">
+            <owl-carousel-o #customerCarousel
+                            [options]="carouselOptions"
+                            *ngIf="testimonials.length">
+              <ng-template carouselSlide *ngFor="let customer of testimonials">
+                <div class="item" style="margin: 10px;">
+                  <div class="slide-itm">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="slider-wpr">
+                          <div class="slider-nv">
+                            <div class="arrow-p">
+                              <img [src]="arrowImg" alt="Arrow">
+                            </div>
+                            <p>{{ customer.metaData.role }} {{ customer.metaData.state }}</p>
+                            <p  [innerHTML]="getSanitizedHtml(customer.post_content)"></p>
+                          </div>
+                          <div class="name-cs">
+                            <div class="n-img">
+                              <img [src]="customer.metaData.image_path ? fileURL + customer.metaData.image_path : image" loading="lazy" alt="User">
+
+                            </div>
+                            <div class="name-l">
+                              <h6>{{ customer.post_title }}</h6>
+                              <p>{{ customer.metaData.testimonials_type }}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </owl-carousel-o>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

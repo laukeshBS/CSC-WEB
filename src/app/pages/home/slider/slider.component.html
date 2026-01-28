@@ -1,0 +1,35 @@
+<section class="Home-banner">
+  <div class="H-bnner">
+
+
+   <owl-carousel-o *ngIf="slides.length > 0" [options]="carouselOptions" #owlCarousel>
+    <ng-template carouselSlide *ngFor="let slide of slides; trackBy: trackById">
+        <div class="h-img">
+          <img [src]="image">
+          <div class="men">
+            <img loading="lazy" [src]="apiDocUrl+slide.metaData.image_path" alt="">
+          </div>
+        </div>
+
+        <div class="h-content">
+          <div class="content-wrp">
+            <div class="content-wrpers">
+              <!-- <h6>{{ slide.title }}</h6>
+              <h3>{{ slide.heading }}</h3>
+              <p>{{ slide.description }}</p>
+              <button type="button" class="btn-abt">About Us</button>-->
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </owl-carousel-o>
+    <div *ngIf="slides.length === 0" class="no-slides">
+      <div class="h-img">
+              <!-- Static background image -->
+              <img [src]="image" alt="Banner Background" loading="lazy" class="bg-img" />
+
+        </div>
+       </div>
+
+  </div>
+</section>

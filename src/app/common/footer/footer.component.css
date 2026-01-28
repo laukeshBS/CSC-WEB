@@ -1,0 +1,116 @@
+.map-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio (height/width * 100) */
+  overflow: hidden;
+  border-radius: 8px; /* Optional for rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional for shadow */
+}
+
+.map-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.emi {
+  position: fixed;
+  text-decoration: none;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%) rotate(180deg);
+   writing-mode: sideways-rl;
+  text-orientation: upright;
+  color: #f9f9f9;
+  border-radius: 0px 10px 10px 0px;
+  padding: 10px;
+  background-color: #ff000f;
+
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* Fallback for browsers that do not support writing-mode */
+@supports not (writing-mode: vertical-rl) {
+  .emi {
+    writing-mode: horizontal-tb;
+    transform: rotate(90deg) translateY(-50%);
+    transform-origin: right center;
+  }
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .emi {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .emi {
+    font-size: 0.8rem;
+    padding: 6px;
+  }
+}
+.emi:hover {
+    text-decoration: none;
+    color: #fff;
+}
+.emiLeft {
+  position: fixed;
+    bottom: 0%;
+    left: 36px;
+    transform: translateY(-50%) rotate(269deg);
+    writing-mode: vertical-rl;
+    display: flex;
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    line-height: 1.2;
+    white-space: nowrap;
+    color: #f9f9f9;
+    background-color: #2a457f;
+    border-radius: 0 0 10px 10px;
+    z-index: 1000;
+    font-size: 14px;
+}
+
+
+
+/* Fallback for browsers that do not support writing-mode */
+@supports not (writing-mode: vertical-rl) {
+  .emiLeft {
+    writing-mode: horizontal-tb;
+    transform: rotate(90deg) translateY(-50%);
+    transform-origin: right center;
+  }
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .emiLeft {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .emiLeft {
+    font-size: 0.8rem;
+    padding: 6px;
+  }
+}
+.emiLeft:hover {
+   text-decoration: none !important;
+    color: #fff;
+}
+
+
