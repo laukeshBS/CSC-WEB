@@ -1,4 +1,4 @@
-<section class="partner">
+<section class="partner text-center">
   <div class="container">
     <div class="financial-head">
       <h3>BFA Registration Status</h3>
@@ -8,9 +8,68 @@
 
 <section class="partner">
   <div class="container">
-    <div class="become-partner">
-      <h3>Current Status!</h3>
-      <h5>{{ getStatusLabel() }}</h5>
+    <div class="become-partner text-center">
+
+      <!-- Centered Form subFormdisable-->
+      <div *ngIf="subFormdisable"  class="d-flex justify-content-center align-items-center">
+        <form
+          [formGroup]="statusForm"
+          enctype="multipart/form-data"
+          (ngSubmit)="onCheckedStatus()"
+          class="w-100"
+          style="max-width: 400px;"
+        >
+
+          <!-- Phone Field -->
+          <div class="form-group mb-3 text-start">
+            <label for="phone">Phone No.<span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              id="phone"
+              formControlName="phone"
+              maxlength="10"
+              autocomplete="off"
+            />
+            <div *ngIf="(submitted || p['phone'].dirty) && p['phone'].invalid" class="text-danger">
+              Phone is required and must be 10 digit
+            </div>
+          </div>
+
+          <!-- PAN Field -->
+          <div class="form-group mb-3 text-start">
+            <label for="pan">PAN No.<span class="text-danger">*</span></label>
+            <input
+              type="text"
+              (input)="convertToUppercase('pan')"
+              class="form-control"
+              id="pan"
+              formControlName="pan"
+              maxlength="10"
+              autocomplete="off"
+            />
+            <div *ngIf="(submitted || p['pan'].dirty) && p['pan'].invalid" class="text-danger">
+              PAN is required and must be 10 characters (Format: ABCDE1234F)
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div *ngIf="subbuttonDisable" class="form-group mb-3 text-center">
+            <button type="submit" class="btn btn-success">Submit</button>
+            <div *ngIf="message" [ngClass]="['mt-2', errClass]">
+              {{ message }}
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Status Section -->
+      <div  *ngIf="message" class="mt-4">
+        <h3>Current Status!</h3>
+        <h5>{{ getStatusLabel() }}</h5>
+      </div>
+
     </div>
   </div>
 </section>

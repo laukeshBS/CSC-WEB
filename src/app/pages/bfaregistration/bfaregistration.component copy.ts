@@ -13,6 +13,10 @@ import { Router } from '@angular/router';
 })
 export class BfaregistrationComponent implements OnInit {
 ifscError: any;
+fileErrors: any;
+termconditionsUrl: any;
+confirm_accountError: any;
+messageProf: any;
 accountValidation($event: Event) {
 throw new Error('Method not implemented.');
 }

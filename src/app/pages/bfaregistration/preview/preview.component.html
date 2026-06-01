@@ -1,0 +1,121 @@
+<section class="partner text-center">
+  <div class="container">
+    <div class="financial-head">
+      <h3>BFA Registration Preview Details</h3>
+    </div>
+  </div>
+</section>
+
+<section class="partner">
+<div *ngIf="activeTab === '4'" class="tabcontent container">
+  <div class="become-partner">
+
+ <div class="container mt-4">
+
+  <!-- BASIC -->
+  <div class="card mb-3">
+    <div class="card-header"><b>Basic Details</b></div>
+    <div class="card-body">
+      <p><b>Phone:</b> {{ panData?.phone }}</p>
+      <p><b>PAN:</b> {{ panData?.pan }}</p>
+      <p><b>Name:</b> {{ panData?.name }}</p>
+      <p><b>Father Name:</b> {{ panData?.father_name }}</p>
+      <p><b>DOB:</b> {{ panData?.dob }}</p>
+    </div>
+  </div>
+
+  <!-- PERSONAL -->
+  <div class="card mb-3">
+    <div class="card-header"><b>Personal Details</b></div>
+    <div class="card-body">
+      <p><b>Email:</b> {{ personalData?.email_id }}</p>
+      <p><b>Alternate Mobile:</b> {{ personalData?.alternate_mobile }}</p>
+      <p>
+  <b>Education:</b> {{
+    personalData?.higher_education === 'Other'
+      ? personalData?.other_education
+      : personalData?.higher_education
+  }}
+</p><p><b>Gender:</b> {{ personalData?.gender }}</p>
+      <p><b>Profession:</b> {{ personalData?.profession }}</p>
+      <p><b>Profession Document:</b>  <a [href]="fileURL+personalData?.profession_doc" target="_blank">View</a></p>
+    </div>
+  </div>
+
+  <!-- ADDRESS -->
+  <div class="card mb-3">
+    <div class="card-header"><b>Address Details</b></div>
+    <div class="card-body">
+      <p><b>State:</b> {{ personalData?.state_name }}</p>
+      <p><b>District:</b> {{ personalData?.district_name }}</p>
+      <p><b>Pincode:</b> {{ personalData?.pincode }}</p>
+      <p><b>Address:</b> {{ personalData?.complete_address }}</p>
+    </div>
+  </div>
+
+  <!-- BANK -->
+  <div class="card mb-3">
+    <div class="card-header"><b>Bank Details</b></div>
+    <div class="card-body">
+      <p><b>IFSC:</b> {{ personalData?.ifsc_code }}</p>
+      <p><b>Bank:</b> {{ personalData?.bank_name }}</p>
+      <p><b>Branch:</b> {{ personalData?.bank_branch }}</p>
+      <p><b>Account:</b> ****{{ personalData?.account_no?.slice(-4) }}</p>
+      <p><b>Type:</b> {{ personalData?.account_type }}</p>
+    </div>
+  </div>
+
+  <!-- GST -->
+  <div class="card mb-3">
+    <div class="card-header"><b>GST Details</b></div>
+    <div class="card-body">
+      <p><b>Registered:</b> {{ personalData?.gst_registered }}</p>
+      <div *ngIf="personalData?.gst_registered === 'Yes'">
+        <p><b>GST No:</b> {{ personalData?.gst_no }}</p>
+         <p><b>GST Document:</b>   <a [href]="fileURL+personalData?.gst_file" target="_blank">View</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOCATION -->
+  <div class="card mb-3">
+    <div class="card-header"><b>Location</b></div>
+    <div class="card-body">
+      <p><b>Latitude:</b> {{ personalData?.latitude }}</p>
+      <p><b>Longitude:</b> {{ personalData?.longitude }}</p>
+    </div>
+  </div>
+
+  <!-- REFERENCE -->
+  <div class="card mb-3">
+    <div class="card-header"><b>Reference</b></div>
+    <div class="card-body">
+      <p><b>CSC ID:</b> {{ personalData?.ref_cscid }}</p>
+      <p><b>Name:</b> {{ personalData?.ref_name }}</p>
+      <p><b>Mobile:</b> {{ personalData?.ref_mobile }}</p>
+    </div>
+  </div>
+
+  <!-- TERMS -->
+  <div class="card mb-3">
+    <div class="card-body">
+      <p><b>Terms Accepted:</b> {{ personalData?.terms ? 'Yes' : 'No' }}</p>
+    </div>
+  </div>
+
+  <!-- BUTTON -->
+  <div class="text-center mt-4">
+    <button class="btn btn-success" (click)="finalSubmit()">
+      Confirm & Pay Now
+    </button>
+  </div>
+
+  <!-- MESSAGE -->
+  <div *ngIf="message " [ngClass]="errClass" class="mt-3 text-center">
+    {{ message }}
+  </div>
+
+</div>
+</div>
+</div>
+</section>

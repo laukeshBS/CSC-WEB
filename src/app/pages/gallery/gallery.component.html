@@ -1,45 +1,92 @@
 <h2 style="text-align: center;margin: 18px;">Gallery</h2>
+
 <div class="gallery">
   <div class="row">
-    <!-- <div *ngIf="!galleryLoaded">Loading galleries...</div>
-   <div *ngIf="galleryLoaded && galleryItems.length === 0">No gallery found</div> -->
-    <div
 
+    <div
       *ngFor="let gallery of galleryItems; trackBy: trackById"
       class="col-md-4"
       style="margin-bottom: 31px;"
     >
       <div
         class="gallery-flex"
-        (click)="displayGalleryById(gallery.id)"
         [id]="'gallery_flex_' + gallery.id"
         [attr.data-description]="getSanitizedHtml(gallery.description)"
-
       >
+
         <div class="gallery-category">
+
           <div
-            *ngFor="let image of gallery.images"
+            *ngFor="let image of gallery.images; let i = index"
             class="gallery-item"
-            [ngClass]="'gallery-item' + (image.index + 1)"
+            [ngClass]="'gallery-item' + (i + 1)"
+            (click)="openGallery(gallery, i); $event.stopPropagation()"a
           >
-            <img [src]="image.src" [alt]="image.alt" class="img-fluid" />
+
+            <!-- VIDEO -->
+            <ng-container *ngIf="gallery.imageVideo === 'video'; else imageBlock">
+              <div class="video-thumb">
+                <img [src]="image.src" [alt]="image.alt" class="img-fluid" />
+                <div class="play-icon"></div>
+              </div>
+            </ng-container>
+
+            <!-- IMAGE -->
+            <ng-template #imageBlock>
+              <img [src]="image.src" [alt]="image.alt" class="img-fluid" />
+            </ng-template>
+
             <div class="image-info">{{ image.alt }}</div>
+
           </div>
-        </div>
-        <div [innerHTML]="getSanitizedHtml(gallery.description)" class="long-text read-more mb-0">
 
         </div>
+
+        <div
+          [innerHTML]="getSanitizedHtml(gallery.description)"
+          class="long-text read-more mb-0">
+        </div>
+
       </div>
     </div>
+
+  </div>
+</div>
+
+<!-- ================= LIGHTBOX ================= -->
+
+<div class="lightbox" *ngIf="isLightboxOpen" [ngStyle]="{ display: 'flex' }">
+
+  <!-- CLOSE -->
+  <button class="close-btn" (click)="closeLightbox()">×</button>
+
+  <!-- IMAGE MODE -->
+  <ng-container *ngIf="selectedGallery?.imageVideo === 'image'">
+
+    <button class="lightbox-button prev-btn" (click)="prevImage()">&lt;</button>
+
+    <img [src]="lightboxImage?.src" class="lightbox-img" />
+
+    <button class="lightbox-button next-btn" (click)="nextImage()">&gt;</button>
+
+  </ng-container>
+
+  <!-- VIDEO MODE -->
+  <ng-container *ngIf="selectedGallery?.imageVideo === 'video'">
+
+    <iframe
+      width="100%"
+  height="500"
+  [src]="safeVideoUrl"
+  frameborder="0"
+  allowfullscreen>
+    </iframe>
+
+  </ng-container>
+
+  <!-- DESCRIPTION -->
+  <div class="image-description">
+    {{ selectedGallery?.description }}
   </div>
 
-  <!-- Lightbox -->
-
-</div>
-<div class="lightbox" id="lightbox" *ngIf="isLightboxOpen" [ngStyle]="{ display: 'flex' }">
-  <button class="close-btn" (click)="closeLightbox()">×</button>
-  <button class="lightbox-button prev-btn" (click)="prevImage()">&lt;</button>
-  <img [src]="lightboxImage.src"  />
-  <div class="image-description">{{ lightboxGalleryDescription }}</div>
-  <button class="lightbox-button next-btn" (click)="nextImage()">&gt;</button>
 </div>

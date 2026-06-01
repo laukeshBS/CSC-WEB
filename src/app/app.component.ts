@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./common/header/header.component";
 import { FooterComponent } from "./common/footer/footer.component";
+import { InactivityService } from './core/services/inactivity-service.service';
 
 @Component({
   selector: 'app-root',
@@ -12,4 +13,6 @@ import { FooterComponent } from "./common/footer/footer.component";
 })
 export class AppComponent {
   title = 'e-Loan';
+  constructor(private inactivityService: InactivityService) {}
 }
+

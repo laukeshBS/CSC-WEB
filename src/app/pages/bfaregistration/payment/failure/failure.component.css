@@ -1,0 +1,10 @@
+/* failure.component.css */
+
+.failure-box{
+
+  text-align: center;
+  padding: 30px;
+  border: 1px solid red;
+  border-radius: 10px;
+}
+

@@ -2,14 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BfaregistrationService } from '../../core/services/bfaregistration.service';
-import { Router } from '@angular/router';
+import { Router,RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { environment } from '../../environments/environment';
+import { StorageService } from '../../core/storage.service';
 
 @Component({
   selector: 'app-bfaregistration',
   standalone: true,
-  imports: [FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [FormsModule,RouterModule, CommonModule, ReactiveFormsModule],
   templateUrl: './bfaregistration.component.html',
   styleUrls: ['./bfaregistration.component.css']
 })
@@ -26,173 +27,27 @@ export class BfaregistrationComponent implements OnInit {
   submitted = false;
   message = '';
   messagePro='';
-  phone: string | null = localStorage.getItem('userPhone');
-  stepsNumber: number = +(localStorage.getItem('steps') || 0);
+  phone: string | null = this.storageService.get('userPhone');
+  stepsNumber: any = this.storageService.get('steps');
+  pan: any = '';
   activeTab = '2';
   stateList: any[] = [];
   districtList: any[] = [];
-  status:any =+(localStorage.getItem('status') || 0);
+  status:any =this.storageService.get('status');
   ifscError: string = '';
-bankList = [
-  "Ab Bank Ltd",
-  "Abhyudaya Co Operative Bank Ltd.",
-  "Abu Dhabi Commercial Bank",
-  "Allahabad Bank",
-  "Andhra Bank",
-  "Antwerp Diamond Bank N.V",
-  "Axis Bank Limited",
-  "Bajaj Allianz Life Insurance Company Limited",
-  "Bank of America N.A.",
-  "Bank of Bahrain And Kuwait B.S.C",
-  "Bank of Baroda",
-  "Bank of Ceylon",
-  "Bank of India",
-  "Bank of Maharashtra",
-  "Barclays Bank Plc",
-  "Baroda Pioneer Mutual Fund",
-  "Bassein Catholic Cooperative Bank Limited.",
-  "Bharti Axa Mutual Fund",
-  "Birla Sun Life Insurance Company Limited",
-  "Birla Sun Life Mutual Fund",
-  "Bnp Paribas",
-  "Bnp Paribas Mutual Fund",
-  "Calyon Bank",
-  "Canara Bank",
-  "Canara Robeco Mutual Fund",
-  "Central Bank of India",
-  "Citibank N.A",
-  "Citizen Credit Cooperative Bank Ltd.",
-  "City Union Bank Limited",
-  "Corporation Bank",
-  "Credit Suisse Ag",
-  "Dbs Bank Ltd.",
-  "Dena Bank",
-  "Deposit Insurance And Credit Guarantee Corporation",
-  "Deutsche Bank Ag",
-  "Deutsche Mutual Fund",
-  "Deutsche Securities India Private Limited",
-  "Development Credit Bank Ltd.",
-  "Dhanlaxmi Bank Limited",
-  "Dombivli Nagari Sahakari Bank Ltd.",
-  "DSP Blackrock Mutual Fund",
-  "EPFO A/C SBI Portfolio Managers",
-  "Export Credit Guarantee Corporation of India Ltd.",
-  "Export Import Bank of India",
-  "Fidelity Mutual Fund",
-  "Firstrand Bank Ltd",
-  "Franklin Templeton Mutual Fund",
-  "General Insurance Corporation of India",
-  "Goldman Sachs (India) Capital Markets Private Limited",
-  "HDFC Bank Limited",
-  "HDFC Mutual Fund",
-  "HSBC Mutual Fund",
-  "ICICI Bank Limited",
-  "ICICI Lombard General Insurance Company Limited",
-  "ICICI Prudential Life Insurance Company Limited",
-  "ICICI Prudential Mutual Fund",
-  "ICICI Securities Primary Dealership Limited",
-  "IDBI Bank Limited",
-  "IDFC Mutual Fund",
-  "Indian Bank",
-  "Indian Overseas Bank",
-  "Indusind Bank Limited",
-  "ING  Mutual Fund",
-  "ING Vysya Bank Ltd",
-  "J M Financial Mutual Fund",
-  "Janakalyan Sahakari Bank Ltd",
-  "Janata Sahakari Bank Ltd. Pune",
-  "JP Morgan Chase Bank",
-  "JP morgan Mutual Fund",
-  "Kallappanna Awade Ichalkaranji Janata Sahakari Bank Ltd.",
-  "Kotak Mahindra Bank Limited",
-  "Kotak Mahindra Mutual Fund",
-  "L And T Mutual Fund",
-  "LIC Mutual Fund",
-  "Life Insurance Corporation of India",
-  "Morgan Stanley India Primary Dealer Private Limited",
-  "Nagpur Nagarik Sahakari Bank Ltd",
-  "National Bank For Agriculture And Rural Development",
-  "National Housing Bank",
-  "New India Co Operative Bank Ltd.",
-  "Nkgsb Co Op Bank Ltd.",
-  "Nomura Fixed Income Securities Private Limited",
-  "Nutan Nagarik Sahakari Bank Ltd",
-  "Oman International Bank S.A.O.G.",
-  "Oriental Bank of Commerce",
-  "PNB Gilts Limited.",
-  "Principal Mutual Fund",
-  "Punjab And Maharashtra Co Operative Bank Ltd.",
-  "Punjab And Sind Bank",
-  "Punjab National Bank",
-  "Rajkot Nagarik Sahakari Bank Ltd.",
-  "Reliance Life Insurance Company Limited",
-  "Reliance Mutual Fund",
-  "Religare Mutual Fund",
-  "SBI Dfhi Ltd",
-  "SBI Life Insurance Company Limited",
-  "SBI Mutual Fund",
-  "Sicom Ltd.",
-  "Small Industries Development Bank of India",
-  "Societe Generale",
-  "Standard Chartered Bank",
-  "State Bank of Bikaner And Jaipur",
-  "State Bank of Hyderabad",
-  "State Bank of India",
-  "State Bank of Mauritius Ltd",
-  "State Bank of Mysore",
-  "State Bank of Patiala",
-  "State Bank of Travancore",
-  "Stci Primary Dealer Limited",
-  "Syndicate Bank",
-  "Tamilnad Mercantile Bank Ltd.",
-  "Tata Mutual Fund",
-  "Thane Bharat Sahakari Bank Ltd",
-  "The Ahmedabad Mercantile Co Operative Bank Ltd",
-  "The Bank of Nova Scotia",
-  "The Bank of Tokyo Mitsubishi Ufj Ltd.",
-  "The Bharat Cooperative Bank Mumbai Ltd.",
-  "The Catholic Syrian Bank Ltd.",
-  "The Cosmos Cooperative Bank Ltd.",
-  "The Federal Bank Limited",
-  "The Greater Bombay Cooperative Bank Ltd.",
-  "The Gujarat State Cooperative Bank Ltd.",
-  "The Hongkong And Shanghai Banking Corporation Limited",
-  "The Jammu And Kashmir Bank Ltd.",
-  "The Kalupur Commercial Cooperative Bank Limited",
-  "The Kalyan Janata Sahakari Bank Ltd.",
-  "The Kapol Cooperative Bank Ltd.",
-  "The Karad Urban Cooperative Bank Ltd. Karad",
-  "The Karnataka Bank Ltd.",
-  "The Karur Vysya Bank Ltd.",
-  "The Lakshmi Vilas Bank Ltd.",
-  "The Mahanagar Co Operative Bank Ltd",
-  "The Maharashtra State Co Operative Bank Ltd",
-  "The Mumbai District Central Cooperative Bank Ltd.",
-  "The New India Assurance Co. Ltd.",
-  "The Ratnakar Bank Ltd.",
-  "The Royal Bank of Scotland N. V.",
-  "The Saraswat Cooperative Bank Ltd",
-  "The Shamrao Vithal Co Operative Bank Limited",
-  "The South Indian Bank Limited",
-  "The Surat Peoples Coop Bank Ltd.",
-  "The Tamil Nadu State Apex Coop. Bank Ltd.",
-  "The Thane Janata Sahakari Bank Ltd.",
-  "The West Bengal State Cooperative Bank Ltd.",
-  "UCO Bank",
-  "Union Bank of India",
-  "United Bank of India",
-  "Uti Mutual Fund",
-  "Vijaya Bank",
-  "Yes Bank Limited"
-];
+
   errClass: string = 'text-danger';
   uploadedFileName: string | undefined;
   messageFile: string | undefined;
   loading: boolean | undefined;
+  confirm_accountError: string | undefined;
+  bank_name: any;
+  bank_branch: any;
+  messageProf:string | undefined;
 
   constructor(
     private fb: FormBuilder,
-    private bfaregistrationService: BfaregistrationService,
+    private bfaregistrationService: BfaregistrationService,private storageService : StorageService,
     private router: Router
   ) {}
   openTab(tabName: any): void {
@@ -200,12 +55,13 @@ bankList = [
      this.activeTab = tabName;
   }
   ngOnInit(): void {
-
+   this.getBfaInfo();
     this.maxDate = this.getMaxDateFor18YearsOld();
-    if (this.status > 2) {
-       this.router.navigate(['/status']);
-    }
-
+  if ([2, 3].includes(this.status) || this.stepsNumber > 3) {
+    console.log('Redirecting to status page');
+    this.router.navigate(['/status']);
+  }
+//this.termconditionsUrl= this.router.navigate(['/terms_conditions']);
     if (!this.phone || !this.stepsNumber) {
        this.router.navigate(['/otp']);
     }
@@ -214,11 +70,11 @@ bankList = [
         this.activeTab = '3';
         this.openTab(this.activeTab);
     }
-    console.log(this.stepsNumber);
+    //console.log(this.stepsNumber);
     this.initPanForm();
     this.initPersonalDetailsForm();
     this.getStates();
-    this.getBfaInfo();
+
   }
  // ✅ Custom Latitude Validator
   latitudeRangeValidator(control: AbstractControl) {
@@ -233,6 +89,8 @@ bankList = [
     if (isNaN(value)) return null;
     return value < -180 || value > 180 ? { outOfRange: true } : null;
   }
+
+
 
   get latitude() { return this.personalDetailsForm.get('latitude'); }
   get longitude() { return this.personalDetailsForm.get('longitude'); }
@@ -259,6 +117,7 @@ bankList = [
       email_id: ['', [Validators.required, Validators.email]],
       alternate_mobile: ['', [Validators.pattern('^[0-9]{10}$')]], // not required
       higher_education: ['', Validators.required],
+      other_education: [''],
       gender: ['', Validators.required],
       state_name: ['', Validators.required],
       district_name: ['', Validators.required],
@@ -267,7 +126,7 @@ bankList = [
       latitude: ['', [Validators.required, Validators.pattern(/^[-]?\d+(\.\d{1,10})?$/), this.latitudeRangeValidator]],
       longitude: ['', [Validators.required, Validators.pattern(/^[-]?\d+(\.\d{1,10})?$/), this.longitudeRangeValidator]],
       gst_registered: ['', Validators.required],
-      gst_no: [''],
+      gst_no: ['', [ Validators.pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/)]],
       gst_file: [''],
       account_type: ['', Validators.required],
       bank_name: ['', Validators.required],
@@ -281,17 +140,52 @@ bankList = [
       district_code: ['', Validators.required],
       ref_mobile: ['', [Validators.pattern('^[0-9]{10}$')]],
       phone: [''],
+      profession_doc: [''], // 1MB
       other_profational_work: [''],
       terms: ['', [Validators.required]],
-      gst_file_name: ['']
+      confirm_account_no:['', [Validators.required]],
+      gst_file_name: [''],
+      profession_doc_name:['']
+
 
     });
+ this.personalDetailsForm.get('profession_doc_name')?.valueChanges.subscribe(value => {
+      const profession_doc_name = this.personalDetailsForm.get('profession_doc_name');
+      if(!profession_doc_name?.value){
+         profession_doc_name?.clearValidators();
+      }else {
+        profession_doc_name?.setValidators([Validators.required]);
+      }
 
+      profession_doc_name?.updateValueAndValidity();
+
+ });
+ this.personalDetailsForm.get('higher_education')?.valueChanges.subscribe(value => {
+
+  const otherEducation =
+    this.personalDetailsForm.get('other_education');
+
+  if (value === 'Other') {
+
+    otherEducation?.setValidators([Validators.required]);
+
+  } else {
+
+    otherEducation?.clearValidators();
+    otherEducation?.setValue('');
+  }
+
+  otherEducation?.updateValueAndValidity();
+
+});
     // ✅ Dynamically handle GST validation
     this.personalDetailsForm.get('gst_registered')?.valueChanges.subscribe(value => {
       const gstNo = this.personalDetailsForm.get('gst_no');
       const gstFile = this.personalDetailsForm.get('gst_file');
-
+       const gst_file_name = this.personalDetailsForm.get('gst_file_name');
+      if(!gst_file_name?.value){
+         gstFile?.clearValidators();
+      }else
       if (value === 'Yes') {
         gstNo?.setValidators([Validators.required]);
         gstFile?.setValidators([Validators.required]);
@@ -366,7 +260,7 @@ bankList = [
     const data = target.value;
       const request = {csc_id:data};
       if(data.length <= 12){
-         this.messagePro = '';
+         this.messageProf = '';
          this.personalDetailsForm.patchValue({
                           ref_name: '',
                           ref_mobile: ''
@@ -380,7 +274,7 @@ bankList = [
                     // ✅ Access the nested properties safely
                     if (res.status && res.data) {
                       if(res.data.vle_name){
-                         this.messagePro = res.data.res_msg;
+                         this.messageProf = res.data.res_msg;
                          this.errClass = 'text-success';
                         this.personalDetailsForm.patchValue({
                           ref_name: res.data.vle_name,
@@ -391,7 +285,7 @@ bankList = [
 
                       // Example: show error message when res_code = 705
                       if (res.data.res_code === '705') {
-                        this.messagePro = res.data.res_msg;
+                        this.messageProf = res.data.res_msg;
                         this.errClass = 'text-danger';
                       }
                     }
@@ -419,7 +313,6 @@ bankList = [
   get pd() { return this.personalDetailsForm.controls; }
 
 /** ----------------------- PAN FORM SUBMIT ---------------------- **/
-/** ----------------------- PAN FORM SUBMIT ---------------------- **/
 onVerify(): void {
   this.submitted = true;
   this.message = '';
@@ -444,21 +337,23 @@ onVerify(): void {
 
       // ✅ Handle success or failure based on API response
       if (res.status === true) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'PAN verified successfully!',
-          confirmButtonText: 'OK'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.activeTab = '3';
-            this.openTab(this.activeTab);
-            this.stepsNumber = 2;
-            this.personalDetailsForm.patchValue({
-              pan_status: 'Verified'
-            });
-          }
-        });
+
+              Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'PAN verified successfully!',
+                confirmButtonText: 'OK'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  this.activeTab = '3';
+                  this.openTab(this.activeTab);
+                  this.stepsNumber = 2;
+                  this.personalDetailsForm.patchValue({
+                    pan_status: 'Verified'
+                  });
+                }
+              });
+
       } else {
         // ❌ Backend returned status: false → Show message
         Swal.fire({
@@ -482,6 +377,7 @@ onVerify(): void {
   });
 }
 
+
   /** ----------------------- PERSONAL DETAILS SUBMIT ---------------------- **/
   onPersonalDetailsSubmit(): void {
     this.submitted = true;
@@ -499,10 +395,11 @@ onVerify(): void {
       ...this.personalDetailsForm.value,
       stepsNumber: this.stepsNumber,
       phone: this.phone,
-      profession: this.personalDetailsForm.value['other_profational_work'],
-      gst_file: this.personalDetailsForm.value['gst_file_name']
+      profession: this.personalDetailsForm.value['profession']??this.personalDetailsForm.value['other_profational_work'],
+      gst_file: this.personalDetailsForm.value['gst_file_name'],
+      profession_doc: this.personalDetailsForm.value['profession_doc_name']
     };
-
+//console.log(request);
    this.bfaregistrationService.updatePost(request).subscribe({
       next: (res) => {
         this.loading = false;
@@ -512,6 +409,8 @@ onVerify(): void {
         if (res.status === true) {
           this.message = 'Personal details submitted successfully!';
           this.errClass = 'text-success';
+
+            this.router.navigate(['/preview']);
         } else {
           // ❌ Server returned status:false → Show message from server
           this.message = res.message || 'Please fill all required fields.';
@@ -529,41 +428,90 @@ onVerify(): void {
   }
 
   /** ----------------------- FETCH BFA INFO ---------------------- **/
-  private getBfaInfo(): void {
-    if (!this.phone) return;
+ private getBfaInfo(): void {
+  if (!this.phone) return;
 
-    const request = { phone: this.phone };
-    this.bfaregistrationService.getData(request).subscribe({
-      next: (response) => {
-        const data = response?.data;
-        if (!data) return;
+  const request = { phone: this.phone };
 
-        this.stepsNumber = data.steps || 0;
-          localStorage.removeItem('steps');
-          localStorage.removeItem('status');
-          localStorage.setItem('steps', data.steps);
-          if (this.stepsNumber > 1) {
-            this.activeTab = '3';
-            this.openTab(this.activeTab);
-          }
-        localStorage.setItem('status', data.status );
+  this.bfaregistrationService.getData(request).subscribe({
+    next: (response) => {
+     // console.log(response);
 
-        this.panForm.patchValue({
-          pan: data.pan || '',
-          name: data.name || '',
-          father_name: data.father_name || '',
+      const data = response?.data;
+      if (!data) return;
+
+      this.stepsNumber = data.steps || 0;
+
+      localStorage.removeItem('steps');
+      localStorage.removeItem('status');
+
+      this.storageService.set('steps', String(data.steps));
+      this.storageService.set('status', String(data.status));
+      this.storageService.set('pan', String(data.pan) || '');
+      if (this.stepsNumber > 1) {
+        this.activeTab = '3';
+        this.openTab(this.activeTab);
+      }
+
+      this.panForm.patchValue({
+        pan: data.pan || '',
+        name: data.name || '',
+        father_name: data.father_name || '',
+        dob: data.dob || '',
+        phone: data.mobile || ''
+      });
+
+      ['pan','name','father_name','dob'].forEach(field => {
+        if (data[field]) this.panForm.get(field)?.disable();
+      });
+
+      if (data.mobile) {
+        this.panForm.get('phone')?.disable();
+      }
+      this.getDistrict(data.state_code);
+      this.status=data.status || '';
+      this.stepsNumber=data.steps || '';
+      this.personalDetailsForm.patchValue({
+          account_no: data.account_no || '',
+          confirm_account_no: data.account_no || '',
+          account_type: data.account_type || '',
+          alternate_mobile: data.alternate_mobile || '',
+          bank_branch: data.bank_branch || '',
+          bank_name: data.bank_name || '',
+          complete_address: data.complete_address || '',
+          district_code: data.district_code || '',
+          district_name: data.district_name || '',
           dob: data.dob || '',
-          phone: data.mobile || ''
-        });
-
-        // Disable prefilled fields
-        ['pan', 'name', 'father_name', 'dob', 'phone'].forEach(field => {
-          if (data[field]) this.panForm.get(field)?.disable();
-        });
-      },
-      error: () => (this.message = 'Error fetching BFA info.', this.errClass='')
-    });
-  }
+          email_id: data.email_id || '',
+          father_name: data.father_name || '',
+          gender: data.gender || '',
+          terms:data.term_conditions || '',
+          gst_no: data.gst_no || '',
+          gst_registered: data.gst_registered || '',
+          higher_education: data.higher_education || '',
+          other_education: data.other_education || '',
+          ifsc_code: data.ifsc_code || '',
+          profession_doc_name:data.profession_doc||'',
+          latitude: data.latitude || '',
+          longitude: data.longitude || '',
+          mobile: data.mobile || '',
+          name: data.name || '',
+          pan: data.pan || '',
+          pincode: data.pincode || '',
+          profession: data.profession || '',
+          ref_cscid: data.ref_cscid || '',
+          ref_mobile: data.ref_mobile || '',
+          ref_name: data.ref_name || '',
+          state_code: data.state_code || '',
+          state_name: data.state_name || ''
+      });
+    },
+    error: () => {
+      this.message = 'Error fetching BFA info.';
+      this.errClass = '';
+    }
+  });
+}
 
   /** ----------------------- INPUT VALIDATION HELPERS ---------------------- **/
   onlyNumberInput(event: KeyboardEvent): void {
@@ -579,15 +527,166 @@ onVerify(): void {
       event.preventDefault();
     }
   }
-    convertToUppercase(controlName: any): void {
-    const value = this.panForm.get(controlName)?.value;
-     const value1 = this.personalDetailsForm.get(controlName)?.value;
-    if (value || value1) {
-      this.panForm.get(controlName)?.setValue(value.toUpperCase(), { emitEvent: false });
-      this.personalDetailsForm.get(controlName)?.setValue(value1.toUpperCase(), { emitEvent: false });
-    }
+  convertToUppercase(
+  controlName: string
+): void {
+
+  // =====================================
+  // GET FORM CONTROLS
+  // =====================================
+  const panControl =
+    this.panForm.get(controlName);
+
+  const personalControl =
+    this.personalDetailsForm.get(controlName);
+
+  // =====================================
+  // GET VALUES
+  // =====================================
+  const panValue =
+    panControl?.value || '';
+
+  const personalValue =
+    personalControl?.value || '';
+
+  // =====================================
+  // CONVERT TO UPPERCASE
+  // =====================================
+  if (panValue) {
+
+    panControl?.setValue(
+
+      panValue.toUpperCase(),
+
+      { emitEvent: false }
+
+    );
+
   }
-  onFileSelected(event: any): void {
+
+  if (personalValue) {
+
+    personalControl?.setValue(
+
+      personalValue.toUpperCase(),
+
+      { emitEvent: false }
+
+    );
+
+  }
+
+  // =====================================
+  // GST VALIDATION
+  // =====================================
+  if (
+
+    controlName === 'gst_no' &&
+
+    personalValue
+
+  ) {
+
+    const gstNo =
+      personalValue
+        .toUpperCase()
+        .trim();
+
+    // =====================================
+    // GST FORMAT VALIDATION
+    // =====================================
+    const gstPattern =
+      /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+    if (!gstPattern.test(gstNo)) {
+
+      this.messagePro =
+        'Invalid GST Number format';
+
+      this.errClass =
+        'text-danger';
+
+      return;
+
+    }
+
+    // =====================================
+    // API REQUEST
+    // =====================================
+    const request = {
+
+      gst_no: gstNo
+
+    };
+
+    console.log(
+      'GST Request =>',
+      request
+    );
+
+    this.loading = true;
+
+    // =====================================
+    // GST API CALL
+    // =====================================
+    this.bfaregistrationService
+      .gstinStatus(request)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.loading = false;
+
+          console.log(
+            'GST Response =>',
+            res
+          );
+
+          if (res?.status) {
+
+            this.messagePro =
+              res?.message ||
+              'GST verified successfully';
+
+            this.errClass =
+              'text-success';
+
+          } else {
+
+            this.messagePro =
+              res?.message ||
+              'Invalid GST Number';
+
+            this.errClass =
+              'text-danger';
+
+          }
+
+        },
+
+        error: (err: any) => {
+
+          this.loading = false;
+
+          console.error(
+            'GST API Error =>',
+            err
+          );
+
+          this.messagePro =
+            'Something went wrong. Please try again later.';
+
+          this.errClass =
+            'text-danger';
+
+        }
+
+      });
+
+  }
+
+}
+  onFileSelected1(event: any): void {
   const file: File = event.target.files[0];
   this.errorMessage = '';
   this.uploadedFileName = '';
@@ -608,8 +707,8 @@ onVerify(): void {
     return;
   }
 
-  if (file.size > 2 * 1024 * 1024) {
-    this.errorMessage = 'File size must be less than 2MB.';
+  if (file.size > 1 * 1024 * 1024) {
+    this.errorMessage = 'File size must be less than 1MB.';
     return;
   }
 
@@ -648,6 +747,73 @@ onVerify(): void {
 
   reader.readAsDataURL(file); // Converts file to Base64
 }
+uploadedFiles: any = {};   // store file names per field
+fileErrors: any = {};      // store errors per field
+fileLoading: any = {};     // loader per field
+
+onFileSelected(event: any, fieldName: string): void {
+  const file: File = event.target.files[0];
+
+  this.fileErrors[fieldName] = '';
+
+  if (!file) {
+    this.fileErrors[fieldName] = 'Please select a file.';
+    return;
+  }
+
+  const allowedTypes = [
+    'image/png', 'image/jpeg', 'image/webp',
+    'application/pdf', 'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    this.fileErrors[fieldName] = 'Only PNG, JPG, PDF, and DOC files are allowed.';
+    return;
+  }
+
+  if (file.size > 1 * 1024 * 1024) {
+    this.fileErrors[fieldName] = 'File size must be less than 1MB.';
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    const payload = {
+      filename: file.name,
+      filetype: file.type,
+      content: reader.result as string
+    };
+
+    this.fileLoading[fieldName] = true;
+
+    this.bfaregistrationService.uploadFile(payload).subscribe({
+      next: (res: any) => {
+        this.fileLoading[fieldName] = false;
+
+        if (res.status) {
+
+          // ✅ ONLY update current field (no reset)
+          this.uploadedFiles[fieldName] = res.file_name;
+
+          this.personalDetailsForm.patchValue({
+            [fieldName]: res.file_name
+          }, { emitEvent: false }); // 🔥 prevent unwanted triggers
+
+        } else {
+          this.fileErrors[fieldName] = res.message || 'Upload failed.';
+        }
+      },
+      error: () => {
+        this.fileLoading[fieldName] = false;
+        this.fileErrors[fieldName] = 'Error uploading file.';
+      }
+    });
+  };
+
+  reader.readAsDataURL(file);
+}
 inputType: string = 'file';
 termsAccepted: boolean = false;
 
@@ -663,49 +829,321 @@ onWorkQualificationChange(event: Event): void {
   const data = target.value;
   this.showProfessionalWork = (data === 'Other');
 }
-accountValidation(event: Event): void {
+accountMatchValidation(event: Event): void {
   const target = event.target as HTMLSelectElement;
-  const ifsc_code = target.value;
-   const account = this.personalDetailsForm.get('account_no')?.value;
-
-   if(ifsc_code.length >= 11){
-
-      const request={
-        account:account,
-        ifsc:ifsc_code
-      }
-this.ifscError = '';
-
-    // 1️⃣ Validate IFSC format
-    const ifscPattern = /^[A-Z]{4}0[A-Z0-9]{6}$/;
-    if (ifsc_code && !ifscPattern.test(ifsc_code)) {
-      this.ifscError = 'Invalid IFSC Code format. (e.g. ICIC0001234)';
+  const confirm_account = target.value;
+  const account = this.personalDetailsForm.get('account_no')?.value;
+   if (account !== confirm_account) {
+      this.confirm_accountError = 'Account do not match';
       return;
+    }else{
+       this.confirm_accountError ='';
     }
 
-    // 2️⃣ Validate account no presence
-    if (!account) {
-      this.ifscError = 'Enter Account Number first.';
-      return;
-    }
+}
+accountValidation(event: Event): void {
 
+  const target =
+    event.target as HTMLInputElement;
 
-      this.loading = true;
-     console.log(request);
-    this.bfaregistrationService.bankStatus(request).subscribe({
+  // =====================================
+  // GET VALUES
+  // =====================================
+  const ifsc_code =
+    (target.value || '')
+      .trim()
+      .toUpperCase();
+
+  const account =
+    this.personalDetailsForm
+      .get('account_no')
+      ?.value || '';
+
+  // =====================================
+  // RESET
+  // =====================================
+  this.ifscError = '';
+
+  this.loading = false;
+
+  // =====================================
+  // EMPTY IFSC
+  // =====================================
+  if (!ifsc_code) {
+
+    this.personalDetailsForm.patchValue({
+
+      bank_name: '',
+
+      bank_branch: ''
+
+    });
+
+    return;
+
+  }
+
+  // =====================================
+  // VALIDATE IFSC LENGTH
+  // =====================================
+  if (ifsc_code.length < 11) {
+
+    this.ifscError =
+      'IFSC Code must be 11 characters';
+
+    this.personalDetailsForm.patchValue({
+
+      bank_name: '',
+
+      bank_branch: ''
+
+    });
+
+    return;
+
+  }
+
+  // =====================================
+  // VALIDATE IFSC FORMAT
+  // =====================================
+  const ifscPattern =
+    /^[A-Z]{4}0[A-Z0-9]{6}$/;
+
+  if (!ifscPattern.test(ifsc_code)) {
+
+    this.ifscError =
+      'Invalid IFSC Code format. Example: ICIC0001234';
+
+    this.personalDetailsForm.patchValue({
+
+      bank_name: '',
+
+      bank_branch: ''
+
+    });
+
+    return;
+
+  }
+
+  // =====================================
+  // REQUEST
+  // =====================================
+  const request = {
+
+    // account: account,
+
+    ifsc: ifsc_code
+
+  };
+
+  console.log(
+    'IFSC Request =>',
+    request
+  );
+
+  // =====================================
+  // LOADING
+  // =====================================
+  this.loading = true;
+
+  // =====================================
+  // API CALL
+  // =====================================
+  this.bfaregistrationService
+    .getBankData(request)
+    .subscribe({
+
       next: (res: any) => {
-        if (res.status) {
 
         this.loading = false;
-         this.errClass="text-success";
-          this.messageFile = res.message ;
+
+        console.log(
+          'Bank Response =>',
+          res
+        );
+
+        if (
+          res &&
+          res.status &&
+          res.data
+        ) {
+
+          this.errClass =
+            'text-success';
+
+          this.ifscError = '';
+
+          this.personalDetailsForm
+            .patchValue({
+
+              bank_name:
+                res.data.bank_name || '',
+
+              bank_branch:
+                res.data.branch_name || ''
+
+            });
+
         } else {
-          this.errorMessage = res.message || 'Bank account status fetched failed.';
+
+          this.personalDetailsForm
+            .patchValue({
+
+              bank_name: '',
+
+              bank_branch: ''
+
+            });
+
+          this.ifscError =
+            res?.message ||
+            'Bank details not found';
+
         }
+
       },
-      error: () => this.errorMessage = 'Bank account status fetched.'
+
+      error: (error: any) => {
+
+        this.loading = false;
+
+        console.error(
+          'IFSC API Error =>',
+          error
+        );
+
+        this.personalDetailsForm
+          .patchValue({
+
+            bank_name: '',
+
+            bank_branch: ''
+
+          });
+
+        this.ifscError =
+          'Unable to fetch bank details';
+
+      }
+
     });
-   }
+
+}
+getCurrentLocation(): void {
+
+  // =========================================
+  // Check Browser Support
+  // =========================================
+  if (!navigator.geolocation) {
+
+    alert(
+      'Geolocation is not supported.'
+    );
+
+    return;
+
+  }
+
+  // =========================================
+  // Get Current Location
+  // =========================================
+  navigator.geolocation.getCurrentPosition(
+
+    (position) => {
+
+      const latitude =
+        position.coords.latitude;
+
+      const longitude =
+        position.coords.longitude;
+
+      console.log(
+        'Latitude =>',
+        latitude
+      );
+
+      console.log(
+        'Longitude =>',
+        longitude
+      );
+
+      // =========================================
+      // Call SMS API
+      // =========================================
+      this.sendSMS();
+
+    },
+
+    (error) => {
+
+      console.error(
+        'Location Error =>',
+        error
+      );
+
+      alert(
+        'Unable to fetch location.'
+      );
+
+    }
+
+  );
+
+}
+sendSMS(): void {
+
+  // =========================================
+  // Validate Mobile Number
+  // =========================================
+  if (
+    !this.phone ||
+    this.phone.length !== 10
+  ) {
+
+    alert(
+      'Please enter a valid mobile number.'
+    );
+
+    return;
+
+  }
+
+  // =========================================
+  // Call SMS API
+  // =========================================
+  //this.phone='8882263385';
+  this.bfaregistrationService
+    .sendSMSBFA(this.phone)
+    .subscribe({
+
+      next: (response: any) => {
+
+        console.log(
+          'SMS API Response =>',
+          response
+        );
+
+        alert(
+          'SMS sent successfully.'
+        );
+
+      },
+
+      error: (error: any) => {
+
+        console.error(
+          'SMS API Error =>',
+          error
+        );
+
+        alert(
+          'Send SMS.'
+        );
+
+      }
+
+    });
 
 }
 

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { OtpService } from '../../core/services/otp.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { StorageService } from '../../core/storage.service';
 
 @Component({
   selector: 'app-otp',
@@ -26,11 +27,10 @@ export class OtpComponent implements OnInit {
   otpDigits: string[] = ['', '', '', '', '', ''];
   mobile: string | null | undefined;
 
-  constructor(private otpService: OtpService, private router: Router) {}
+  constructor(private storageService : StorageService ,private otpService: OtpService, private router: Router) {}
   ngOnInit(): void {
-          localStorage.removeItem('steps');
-          localStorage.removeItem('status');
-          localStorage.removeItem('userPhone');
+
+         this.storageService.clear('userPhone');
   }
 
   /** Step 1: Send OTP (max 3 times) */
@@ -65,14 +65,15 @@ export class OtpComponent implements OnInit {
     this.otpService.sendOtpServices(filters).subscribe({
       next: (res) => {
         this.loading = false;
-         localStorage.removeItem('userPhone');
-         localStorage.setItem('userPhone', this.phone );
+         this.storageService.clear('userPhone');
+         this.storageService.set('userPhone', this.phone);
          this.message=res.message;
         if (res.steps) {
-          localStorage.removeItem('steps');
-          localStorage.removeItem('status');
-          localStorage.setItem('steps', res.steps );
-          this.router.navigate(['/bfaregistration']);
+
+           //this.storageService.clear('steps');
+           //this.storageService.clear('status');
+
+        this.router.navigate(['/bfaregistration']);
           return;
         }
         if (res.status) {
@@ -123,47 +124,62 @@ formatPhone() {
   }
   /** Step 2: Validate OTP */
   validateOtp() {
-    const otp = this.otpDigits.join('');
-    if (!/^[0-9]{6}$/.test(otp)) {
-      this.message = 'Enter a valid 6-digit OTP.';
-      this.error = 'error';
-      return;
-    }
+  const otp = this.otpDigits.join('');
 
-    if (this.otpExpired) {
-      this.message = 'OTP expired. Please resend.';
-      this.error = 'error';
-      return;
-    }
-
-    this.loading = true;
-    const filters = { otp:otp,phone:this.phone };
-    this.otpService.validateOtp(filters).subscribe({
-      next: (res) => {
-        this.loading = false;
-        if (res.status) {
-          this.message = 'OTP verified successfully!';
-          this.mobile =  localStorage.getItem('userPhone');
-           localStorage.removeItem('steps');
-          localStorage.removeItem('status');
-          localStorage.setItem('steps', '1' );
-           this.error = '';
-          clearInterval(this.timerInterval);
-          this.router.navigate(['/bfaregistration']);
-           return;
-        } else {
-          this.message = 'Invalid OTP. Try again.';
-          this.error = 'error';
-        }
-      },
-      error: () => {
-        this.loading = false;
-        this.message = 'Invalid OTP. Please try again.';
-        this.error = 'error';
-      }
-    });
+  if (!/^[0-9]{6}$/.test(otp)) {
+    this.message = 'Enter a valid 6-digit OTP.';
+    this.error = 'error';
+    return;
   }
 
+  if (this.otpExpired) {
+    this.message = 'OTP expired. Please resend.';
+    this.error = 'error';
+    return;
+  }
+
+  this.loading = true;
+
+  const filters = { otp, phone: this.phone };
+
+  this.otpService.validateOtp(filters).subscribe({
+    next: (res: any) => {
+      this.loading = false;
+
+
+
+      if (res?.status) {
+         this.storageService.set('userPhone', this.phone);
+            const steps = Number(res.data.steps) || 0;
+            const status = Number(res.data.status) || 1;
+            const pan = res.data.pan || '';
+         ///console.log('res:', res.data.steps);
+            this.storageService.set('steps', steps);
+            this.storageService.set('status', status);
+          //this.storageService.set('pan', pan || '');
+          //console.log('Saved:', { steps, status });
+        this.message = 'OTP verified successfully!';
+        this.error = '';
+
+        clearInterval(this.timerInterval);
+
+        // ✅ Delay navigation slightly (important fix)
+        setTimeout(() => {
+          this.router.navigate(['/bfaregistration']);
+        }, 100);
+
+      } else {
+        this.message = res.message || 'Invalid OTP.';
+        this.error = 'error';
+      }
+    },
+    error: () => {
+      this.loading = false;
+      this.message = 'Server error. Please try again.';
+      this.error = 'error';
+    }
+  });
+}
   /** Timer Start */
   startTimer() {
     this.timer = 180;

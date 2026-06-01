@@ -1,0 +1,225 @@
+<section class="partner text-center">
+
+  <div class="container">
+
+    <div class="financial-head">
+
+      <h3>
+        BFA Registration Payment Success
+      </h3>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="partner">
+
+  <div class="container">
+
+    <div class="become-partner">
+
+      <div class="success-box1">
+
+        <div class="container mt-5">
+
+          <div
+            class="card shadow p-4 invoice-box"
+            id="print-section"
+          >
+
+            <!-- ===================================== -->
+            <!-- Logo & Invoice Header -->
+            <!-- ===================================== -->
+            <div
+              class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3"
+            >
+
+              <div class="col-md-6 midle-left">
+
+                <a [routerLink]="['/']">
+
+                  <img
+                    src="assets/assetsWeb/images/CSClogo1.svg"
+                    alt="CSC Logo"
+                    style="max-height:70px;"
+                  >
+
+                </a>
+
+              </div>
+
+              <div class="col-md-6 text-end">
+
+                <h4 class="mb-1">
+                  PAYMENT RECEIPT
+                </h4>
+
+                <small>
+                  Date:
+                  {{ todayDate | date:'dd-MM-yyyy' }}
+                </small>
+
+              </div>
+
+            </div>
+
+            <!-- ===================================== -->
+            <!-- Success Message -->
+          
+
+            <!-- ===================================== -->
+            <!-- Invoice Details -->
+            <!-- ===================================== -->
+            <div class="row text-start mt-4">
+
+              <div class="col-md-6 mb-3">
+
+                 <div> <strong>  
+                  Transaction ID :
+                </strong>
+
+              
+                  {{ txnid }}
+                </div>
+
+              </div>
+
+              <div class="col-md-6 mb-3">
+
+                <div>  <strong>
+                  Payment ID :
+                </strong>
+
+              
+                  {{ mihpayid }}
+                </div>
+
+              </div>
+
+              <div class="col-md-6 mb-3">
+
+                 <div><strong>
+                  Payment Status :
+                </strong>
+
+               
+                  {{ status }}
+                </div>
+
+              </div>
+
+              <div class="col-md-6 mb-3">
+
+               <div>  <strong>
+                  Amount Paid :
+                </strong>
+
+               
+                  ₹ {{ amount }}
+                </div>
+
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <div>
+                <strong>
+                  Customer Name :
+                </strong>
+
+                
+                  {{ firstname }}
+                </div>
+
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <div>
+                <strong>
+                  Email Address :
+                </strong>
+
+                  {{ email }}
+                </div>
+
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <div> 
+                <strong>
+                  Mobile Number :
+                </strong>
+
+            
+                  {{ phone }}
+                </div>
+
+              </div>
+
+              <div class="col-md-6 mb-3">
+                 <div>
+                <strong>
+                  Payment Mode :
+                </strong>
+
+            
+                  {{ mode }}
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- ===================================== -->
+            <!-- Footer -->
+            <!-- ===================================== -->
+            <div
+              class="text-center mt-4 border-top pt-3"
+            >
+
+              <p class="mb-0">
+
+                Thank you for registering with CSC Loan Bazar.
+
+              </p>
+
+            </div>
+
+          </div>
+
+          <!-- ===================================== -->
+          <!-- Action Buttons -->
+          <!-- ===================================== -->
+          <div class="text-center mt-4">
+
+            <button
+              type="button"
+              class="btn btn-primary me-2"
+              (click)="printInvoice()"
+            >
+
+              Print Receipt
+
+            </button>
+
+            <a
+              routerLink="/"
+              class="btn btn-success"
+            >
+
+              Go To Home
+
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>

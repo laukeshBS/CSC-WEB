@@ -8,6 +8,11 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { BfaregistrationComponent } from './pages/bfaregistration/bfaregistration.component';
 import { OtpComponent } from './pages/otp/otp.component';
 import { StatusComponent } from './pages/bfaregistration/status/status.component';
+import { PreviewComponent } from './pages/bfaregistration/preview/preview.component';
+import { TermsConditionsComponent } from './pages/bfaregistration/terms-conditions/terms-conditions.component';
+import { PaymentComponent } from './pages/bfaregistration/payment/payment.component';
+import { SuccessComponent } from './pages/bfaregistration/payment/success/success.component';
+import { FailureComponent } from './pages/bfaregistration/payment/failure/failure.component';
 
 export const routes: Routes = [
   {
@@ -41,6 +46,31 @@ export const routes: Routes = [
     path: 'otp',
     title: 'CSC Loan Bazar | OTP ',
     component: OtpComponent
+  },
+  {
+    path: 'preview',
+    title: 'CSC Loan Bazar | Preview ',
+    component: PreviewComponent
+  },
+  {
+    path: 'payment',
+    title: 'CSC Loan Bazar | Payment ',
+    component: PaymentComponent
+  },
+  {
+    path: 'payment/success',
+    title: 'CSC Loan Bazar | Payment Success',
+    component: SuccessComponent
+  },
+  {
+    path: 'payment/failure',
+    title: 'CSC Loan Bazar | Payment Failure',
+    component: FailureComponent
+  },
+  {
+    path: 'terms-conditions',
+    title: 'CSC Loan Bazar | Terms Conditions ',
+    component: TermsConditionsComponent
   },
    {
     path: 'status',
