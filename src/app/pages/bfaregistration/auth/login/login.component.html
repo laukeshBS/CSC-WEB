@@ -1,0 +1,143 @@
+<section class="partner text-center">
+  <div class="container">
+    <div class="financial-head">
+      <h3>BFA Login</h3>
+    </div>
+  </div>
+</section>
+
+<section class="partner">
+  <div class="container">
+
+    <div class="become-partner">
+
+      <div class="row justify-content-center">
+
+        <div class="col-lg-5 col-md-7 col-sm-12">
+
+          <div class="card shadow border-0 p-4">
+
+            <!-- Error Message -->
+            <div class="alert alert-danger" *ngIf="errorMessage">
+              {{ errorMessage }}
+            </div>
+
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+ <!-- User ID -->
+              <div class="mb-3 text-start">
+                <label class="form-label">
+                  User ID / Phone Number<span class="text-danger">*</span>
+                </label>
+                
+
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="userid"
+                  placeholder="Enter User ID">
+
+                <small
+                  class="text-danger"
+                  *ngIf="f.userid.touched && f.userid.errors?.['required']">
+                  User ID is required.
+                </small>
+              </div>
+            
+              
+
+              <!-- Password -->
+              <div class="mb-3 text-start position-relative">
+
+                <label class="form-label">
+                  Password <span class="text-danger">*</span>
+                </label>
+
+                <input
+                  class="form-control pe-5"
+                  [type]="showPassword ? 'text' : 'password'"
+                  formControlName="password"
+                  placeholder="Enter Password">
+
+                <button
+                  type="button"
+                  class="btn btn-link position-absolute end-0 top-50 translate-middle-y mt-3 text-dark"
+                  (click)="togglePassword()">
+
+                  <i [class]="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
+
+                </button>
+
+                <small
+                  class="text-danger"
+                  *ngIf="f.password.touched && f.password.errors?.['required']">
+                  Password is required.
+                </small>
+
+                <small
+                  class="text-danger"
+                  *ngIf="f.password.touched && f.password.errors?.['minlength']">
+                  Password must be at least 8 characters.
+                </small>
+
+              </div>
+
+              <!-- Forgot Password -->
+              <div class="d-flex justify-content-end mb-3">
+
+                <a
+                  routerLink="/auth/forgot-password"
+                  class="text-decoration-none">
+                  Forgot Password?
+                </a>
+
+              </div>
+
+              <!-- Login Button -->
+              <div class="d-grid">
+
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  [disabled]="loading">
+
+                  <span
+                    *ngIf="loading"
+                    class="spinner-border spinner-border-sm me-2">
+                  </span>
+
+                  {{ loading ? 'Logging In...' : 'Login' }}
+
+                </button>
+
+              </div>
+
+            </form>
+
+            <hr>
+
+            <!-- Send Password Token -->
+            <div class="text-center">
+
+              <p class="mb-0">
+                Don't have an account?
+                <a
+                  routerLink="/auth/forgot-password"
+                  class="text-decoration-none fw-bold">
+                  Send Password 
+                </a>
+              </p>
+
+            
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>

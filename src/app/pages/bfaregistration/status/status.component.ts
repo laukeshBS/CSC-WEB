@@ -4,6 +4,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators, FormGroup } 
 import { Router } from '@angular/router';
 import { BfaregistrationService } from '../../../core/services/bfaregistration.service';
 import { StorageService } from '../../../core/storage.service';
+import { CryptoService } from '../../../core/services/crypto.service';
 
 @Component({
   selector: 'app-status',
@@ -23,8 +24,9 @@ export class StatusComponent implements OnInit {
 
   statusOptions = [
     { id: 1, label: 'Pending' },
-    { id: 2, label: 'Payment Pending' },
-    { id: 3, label: 'Approved' }
+    { id: 2, label: 'Pending for approval ' },
+    { id: 3, label: 'Approved' },
+    { id: 4, label: 'Rejected' },
   ];
 
   // ✅ State variables
@@ -32,18 +34,20 @@ export class StatusComponent implements OnInit {
   stepsNumber = 0;
   phone = '';
   pan = '';
+  //loading: false | undefined;
 
   constructor(
     private fb: FormBuilder,
     private bfaregistrationService: BfaregistrationService,
     private storageService: StorageService, // ✅ FIXED
-    private router: Router,
+    private router: Router,private cryptoService: CryptoService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.initStatusForm();
     this.loadFromStorage();
+    
   }
 
   // ✅ Load stored values safely
@@ -93,14 +97,15 @@ export class StatusComponent implements OnInit {
 
     const request = {
       phone: this.statusForm.value.phone,
-      pan: this.statusForm.value.pan
+      pan: this.statusForm.value.pan,
+      token: localStorage.getItem('otpToken') || '',
     };
 
-    this.bfaregistrationService.getDataPhonePAN(request).subscribe({
+    this.bfaregistrationService.getDataPhonePAN(this.cryptoService.encrypt(request)).subscribe({
       next: (response: any) => {
 
-        const data = response?.data || response;
-
+        const data = this.cryptoService.decrypt(response.data);
+          //console.log('Status Response:', data);
         if (!data) {
           this.showMessage('No data found.', 'text-danger');
           return;
@@ -146,4 +151,41 @@ export class StatusComponent implements OnInit {
     this.message = msg;
     this.errClass = css;
   }
+  reRegister(): void {
+
+     //  this.loading = true;
+
+  const request = {
+      phone: this.phone,
+      pan: '',
+      status:this.status,
+      gst_no:'',
+      account_no:'',
+      ifsc_code:'',
+      transaction_id:'',
+      csc_transaction_id: '',
+      payment_status: '',
+      user_id: '',
+      steps: 2
+  };
+
+  this.bfaregistrationService.updatePost(request).subscribe({
+    next: (res) => {
+      //this.loading = false; // ✅ Hide loader
+      this.submitted = false;
+      //console.log(res);
+
+      // ✅ Handle success or failure based on API response
+      if (res.status === true) {
+      }
+
+      // Redirect to registration page
+      this.router.navigate(['/otp']);
+    },
+    error: () => {
+      //this.loading = false; // ✅ Hide loader on error
+      this.showMessage('Error during re-registration.', 'text-danger');
+    }
+  });
+    }
 }

@@ -334,7 +334,7 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.loading      = false;
-          this.districtList = response?.data || [];///this.cryptoService.decrypt(response?.data) || [];
+          this.districtList = this.cryptoService.decrypt(response?.data) || [];
         },
         error: () => {
           this.loading  = false;
@@ -348,7 +348,7 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
     const code     = (event.target as HTMLSelectElement).value;
     const district = this.districtList.find(d => d.f_district_code === code);
 
-    if (district) {
+    if (this.cryptoService.decrypt(district)) {
       this.personalDetailsForm.patchValue({
         district_code: district.f_district_code,
         district_name: district.district_name

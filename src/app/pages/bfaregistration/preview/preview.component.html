@@ -62,6 +62,9 @@
       <p><b>Branch:</b> {{ personalData?.bank_branch }}</p>
       <p><b>Account:</b> ****{{ personalData?.account_no?.slice(-4) }}</p>
       <p><b>Type:</b> {{ personalData?.account_type }}</p>
+      <!--p><b>Cancelled Cheque
+        :</b><a [href]="fileURL+personalData?.cancelled_cheque" target="_blank">View</a></p-->
+
     </div>
   </div>
 

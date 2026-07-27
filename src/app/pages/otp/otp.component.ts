@@ -4,6 +4,8 @@ import { OtpService } from '../../core/services/otp.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { StorageService } from '../../core/storage.service';
+import { CryptoService } from '../../core/services/crypto.service';
+import { request } from 'http';
 
 @Component({
   selector: 'app-otp',
@@ -26,8 +28,9 @@ export class OtpComponent implements OnInit {
   otpBoxes = Array(6).fill(0);
   otpDigits: string[] = ['', '', '', '', '', ''];
   mobile: string | null | undefined;
+  token: string | null | undefined;
 
-  constructor(private storageService : StorageService ,private otpService: OtpService, private router: Router) {}
+  constructor(private storageService : StorageService ,private otpService: OtpService,private cryptoService: CryptoService, private router: Router) {}
   ngOnInit(): void {
 
          this.storageService.clear('userPhone');
@@ -59,23 +62,20 @@ export class OtpComponent implements OnInit {
       this.error = 'error';
       return;
     }
-    this.loading = true;
+   
+
     const filters = { phone: this.phone };
 
-    this.otpService.sendOtpServices(filters).subscribe({
+    this.otpService.sendOtpServices( this.cryptoService.encrypt(filters)).subscribe({
       next: (res) => {
         this.loading = false;
          this.storageService.clear('userPhone');
          this.storageService.set('userPhone', this.phone);
          this.message=res.message;
-        if (res.steps) {
-
-           //this.storageService.clear('steps');
-           //this.storageService.clear('status');
-
-        this.router.navigate(['/bfaregistration']);
-          return;
-        }
+         const restoken = this.cryptoService.decrypt(res.data);
+        // console.log('Decrypted token:', restoken.token);
+          this.token = restoken.token;
+          localStorage.setItem('otpToken', this.token || '');
         if (res.status) {
           this.otpSendCount++;
           this.message = `OTP sent successfully! (Attempt ${this.otpSendCount}/3)`;
@@ -140,9 +140,9 @@ formatPhone() {
 
   this.loading = true;
 
-  const filters = { otp, phone: this.phone };
-
-  this.otpService.validateOtp(filters).subscribe({
+  const filters = { otp, phone: this.phone,token: this.token };
+//console.log('Validating OTP with filters:', filters);
+  this.otpService.validateOtp(this.cryptoService.encrypt(filters)).subscribe({
     next: (res: any) => {
       this.loading = false;
 
@@ -150,23 +150,39 @@ formatPhone() {
 
       if (res?.status) {
          this.storageService.set('userPhone', this.phone);
+         res.data = this.cryptoService.decrypt(res.data);
             const steps = Number(res.data.steps) || 0;
             const status = Number(res.data.status) || 1;
+            const user_id = Number(res.data.user_id) || '';
+            const is_password_set = Number(res.data.is_password_set) || 0;
             const pan = res.data.pan || '';
          ///console.log('res:', res.data.steps);
             this.storageService.set('steps', steps);
+            this.storageService.set('user_id', user_id);
             this.storageService.set('status', status);
           //this.storageService.set('pan', pan || '');
-          //console.log('Saved:', { steps, status });
+         // console.log('Saved:', { steps, status,is_password_set, user_id, pan });
         this.message = 'OTP verified successfully!';
         this.error = '';
 
         clearInterval(this.timerInterval);
 
         // ✅ Delay navigation slightly (important fix)
-        setTimeout(() => {
-          this.router.navigate(['/bfaregistration']);
-        }, 100);
+        if(status === 3 && is_password_set === 0) {
+              setTimeout(() => {
+                this.router.navigate(['/auth/forgot-password']);
+             }, 100);
+        }
+         if(status === 3 && is_password_set === 1) {
+              setTimeout(() => {
+                this.router.navigate(['/auth/login']);
+             }, 100);
+         }
+         if(status < 3) {
+            setTimeout(() => {
+              this.router.navigate(['/bfaregistration']);
+            }, 100);
+          }
 
       } else {
         this.message = res.message || 'Invalid OTP.';

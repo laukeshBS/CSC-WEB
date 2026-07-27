@@ -1,17 +1,32 @@
 import { ApplicationConfig } from '@angular/core';
-import { provideRouter , withHashLocation} from '@angular/router';
-import { routes } from './app.routes';
+import { provideRouter, withHashLocation } from '@angular/router';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'; // Use provideHttpClient
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+
+import { routes } from './app.routes';
+import { authInterceptor } from './core/auth.interceptor';
 
 
 export const appConfig: ApplicationConfig = {
+
   providers: [
-    provideRouter(routes),
+
+    provideRouter(
+      routes,
+      withHashLocation()
+    ),
+
     provideClientHydration(),
+
     provideAnimations(),
-    provideHttpClient(withInterceptorsFromDi()),
-    provideRouter(routes, withHashLocation()) // Setup HttpClient and interceptors
+
+    provideHttpClient(
+      withInterceptors([
+        authInterceptor
+      ])
+    )
+
   ]
+
 };

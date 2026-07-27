@@ -13,6 +13,10 @@ import { TermsConditionsComponent } from './pages/bfaregistration/terms-conditio
 import { PaymentComponent } from './pages/bfaregistration/payment/payment.component';
 import { SuccessComponent } from './pages/bfaregistration/payment/success/success.component';
 import { FailureComponent } from './pages/bfaregistration/payment/failure/failure.component';
+import { LoginComponent } from './pages/bfaregistration/auth/login/login.component';
+import { ChangePasswordComponent } from './pages/bfaregistration/auth/change-password/change-password.component';
+import { ResetPasswordComponent } from './pages/bfaregistration/auth/reset-password/reset-password.component';
+import { ForgotPasswordComponent } from './pages/bfaregistration/auth/forgot-password/forgot-password.component';
 
 export const routes: Routes = [
   {
@@ -57,6 +61,11 @@ export const routes: Routes = [
     title: 'CSC Loan Bazar | Payment ',
     component: PaymentComponent
   },
+  // {
+  //   path: 'payment/success',
+  //   title: 'CSC Loan Bazar | Payment Success',
+  //   component: SuccessComponent
+  // },
   {
     path: 'payment/success',
     title: 'CSC Loan Bazar | Payment Success',
@@ -76,6 +85,26 @@ export const routes: Routes = [
     path: 'status',
     title: 'CSC Loan Bazar | Status ',
     component: StatusComponent
+  },
+  {
+    path: 'auth/login',
+    title: 'CSC Loan Bazar | Login ',
+    component: LoginComponent
+  },
+  {
+    path: 'auth/change-password',
+    title: 'CSC Loan Bazar | Change Password ',
+    component:ChangePasswordComponent
+  },
+  {
+    path: 'auth/reset-password',
+    title: 'CSC Loan Bazar | Reset Password ',
+    component:ResetPasswordComponent
+  },
+  {
+    path: 'auth/forgot-password',
+    title: 'CSC Loan Bazar | Forgot Password ',
+    component: ForgotPasswordComponent
   },
   {
     path: 'web-new/otp',

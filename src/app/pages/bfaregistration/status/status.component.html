@@ -68,8 +68,14 @@
       <div  *ngIf="message" class="mt-4">
         <h3>Current Status!</h3>
         <h5>{{ getStatusLabel() }}</h5>
-      </div>
-
+    
+        <button  *ngIf="+status===4"
+          type="button"
+          class="btn btn-primary mt-3"
+          (click)="reRegister()">
+          Re-Register
+        </button>
+</div>
     </div>
   </div>
 </section>

@@ -10,6 +10,7 @@ export class BfaregistrationService {
 
 
   apiPanUrl: string = environment.apiPanUrl;
+  apiSmsUrl: string = environment.apiSmsURL;
     baseUrl: string = environment.apiUrlOtp;
      API_KEY: string = environment.API_KEY;
 
@@ -46,7 +47,7 @@ export class BfaregistrationService {
 
         const body = filters;
 
-        return this.http.post(this.baseUrl+'bfaInfo/getBankData', body, { headers });
+        return this.http.post(this.baseUrl+'Bank/validate', body, { headers });
       }
       getDataPhonePAN(filters:any): Observable<any> {
         const headers = new HttpHeaders({
@@ -89,7 +90,7 @@ export class BfaregistrationService {
         });
         return this.http.post(`${this.baseUrl}bfaInfo/upload_file`, payload,{ headers });
       }
-      profileStatus(payload: { csc_id: string; }) {
+      profileStatus(payload:any) {
          const headers = new HttpHeaders({
           'Content-Type': 'application/x-www-form-urlencoded; charset=ISO-8859-1',
           'Accept-Charset': 'ISO-8859-1',
@@ -97,7 +98,15 @@ export class BfaregistrationService {
         });
         return this.http.post(`${this.baseUrl}bfaInfo/profileStatus`, payload,{ headers });
       }
-      gstinStatus(payload: { gst_no: string; }) {
+      getWhitelistUser(payload: any) {
+         const headers = new HttpHeaders({
+          'Content-Type': 'application/x-www-form-urlencoded; charset=ISO-8859-1',
+          'Accept-Charset': 'ISO-8859-1',
+          //ss"Authorization": this.API_KEY,
+        });
+        return this.http.post(`${this.baseUrl}bfaInfo/getWhitelistUser`, payload,{ headers });
+      }
+      gstinStatus(payload:any) {
          const headers = new HttpHeaders({
           'Content-Type': 'application/x-www-form-urlencoded; charset=ISO-8859-1',
           'Accept-Charset': 'ISO-8859-1',
@@ -123,6 +132,17 @@ export class BfaregistrationService {
         const body = filters;
 
         return this.http.post(this.baseUrl+'bfaInfo/generateHash', body, { headers });
+      }
+       Ccavenue(filters: any): Observable<any> {
+        const headers = new HttpHeaders({
+          'Content-Type': 'application/x-www-form-urlencoded; charset=ISO-8859-1',
+          'Accept-Charset': 'ISO-8859-1',
+          //ss"Authorization": this.API_KEY,
+        });
+
+        const body = filters;
+
+        return this.http.post(this.baseUrl+'Ccavenue/pay', body, { headers });
       }
      paymentHistoryPost(filters: any): Observable<any> {
         const headers = new HttpHeaders({
@@ -163,7 +183,7 @@ export class BfaregistrationService {
 
           return this.http.get(
 
-             this.apiPanUrl + `index.php/Axis/Kbs/Service/sendSMSBFA/${mobile}`
+             this.apiSmsUrl + `index.php/bfa/Service/sendSMSBFA/${mobile}/Location`
 
           );
 

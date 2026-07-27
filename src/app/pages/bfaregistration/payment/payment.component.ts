@@ -1,34 +1,21 @@
 import {
   Component,
   ElementRef,
-  ViewChild,
-  OnInit
+  OnInit,
+  ViewChild
 } from '@angular/core';
 
-import {
-  CommonModule
-} from '@angular/common';
-
+import { CommonModule } from '@angular/common';
 import {
   FormsModule,
   ReactiveFormsModule
 } from '@angular/forms';
 
-import {
-  Router
-} from '@angular/router';
+import { Router } from '@angular/router';
 
-import {
-  BfaregistrationService
-} from '../../../core/services/bfaregistration.service';
-
-import {
-  StorageService
-} from '../../../core/storage.service';
-
-import {
-  environment
-} from '../../../environments/environment';
+import { StorageService } from '../../../core/storage.service';
+import { CcavenueService } from '../../../core/services/ccavenue.service';
+import { CryptoService } from '../../../core/services/crypto.service';
 
 @Component({
   selector: 'app-payment',
@@ -41,276 +28,163 @@ import {
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.css']
 })
-
 export class PaymentComponent implements OnInit {
 
-  @ViewChild('payuForm')
-  payuForm!: ElementRef<HTMLFormElement>;
+  @ViewChild('ccavenueForm')
+  ccavenueForm!: ElementRef<HTMLFormElement>;
 
-  // =========================================
+  // Payment Gateway
+  paymentUrl = '';
+  encRequest = '';
+  accessCode = '';
+
   // User Details
-  // =========================================
-  phone: string = '';
+  token = localStorage.getItem('otpToken') || '';
 
-  firstname: string = '';
+  phone = '';
+  firstname = '';
+  email = '';
+  userId = '';
 
-  email: string = '';
+  completeAddress = '';
+  districtName = '';
+  stateName = '';
+  pincode = '';
 
-  user_id: any = '';
+  // Registration
+  stepsNumber = '';
 
-  stepsNumber: any = '';
+  // Payment
+  readonly amount = '1499.00';
+  orderId = '';
 
-  // =========================================
-  // PayU Config
-  // =========================================
-  MERCHANT_KEY: string = '7rnFly';
-
-  action: string =
-    'https://test.payu.in/_payment';
-
-  // =========================================
-  // Payment Details
-  // =========================================
-  txnid: string = '';
-
-  hash: string = '';
-
-  amount: string = '1499.00';
-
-  orderID: string = '';
-
-  // =========================================
-  // Backend URL
-  // =========================================
-  apiBaseUrl: string =
-    environment.apiUrlOtp;
-
-  // =========================================
-  // Success & Failure URL
-  // =========================================
-  surl: string = '';
-
-  furl: string = '';
-
-  // =========================================
-  // Loader
-  // =========================================
-  loading: boolean = false;
+  loading = false;
 
   constructor(
-    private bfaregistrationService: BfaregistrationService,
+    private ccavenueService: CcavenueService,
     private storageService: StorageService,
+    private cryptoService: CryptoService,
     private router: Router
   ) {}
 
-  // =========================================
-  // INIT
-  // =========================================
+  // =====================================================
+  // Initialize
+  // =====================================================
   ngOnInit(): void {
 
-    // =========================================
-    // Get Storage Data
-    // =========================================
-    this.phone =
-      this.storageService.get('userPhone') || '';
+    this.loadUserData();
+
+    if (!this.phone || !this.stepsNumber) {
+      this.router.navigate(['/otp']);
+      return;
+    }
+
+    this.orderId = this.generateOrderId();
+
+    this.storageService.set('order_id', this.orderId);
+
+    this.initiatePayment();
+
+  }
+
+  // =====================================================
+  // Load User Details
+  // =====================================================
+  private loadUserData(): void {
+
+    this.phone = this.storageService.get('userPhone') || '';
+    this.firstname = this.storageService.get('name') || '';
+    this.email = this.storageService.get('email') || '';
+    this.userId = this.storageService.get('user_id') || '';
+
+    this.completeAddress =
+      this.storageService.get('complete_address') || '';
+
+    this.districtName =
+      this.storageService.get('district_name') || '';
+
+    this.stateName =
+      this.storageService.get('state_name') || '';
+
+    this.pincode =
+      this.storageService.get('pincode') || '';
 
     this.stepsNumber =
       this.storageService.get('steps') || '';
 
-    this.email =
-      this.storageService.get('email') || '';
-
-    this.firstname =
-      this.storageService.get('name') || '';
-
-    this.user_id =
-      this.storageService.get('user_id') || '';
-
-    // =========================================
-    // Fix Undefined Email
-    // =========================================
-    if (
-      !this.email ||
-      this.email === 'undefined' ||
-      this.email === 'null'
-    ) {
-
-      this.email =
-        'test@gmail.com';
-
-    }
-
-    // =========================================
-    // Fix Undefined Firstname
-    // =========================================
-    if (
-      !this.firstname ||
-      this.firstname === 'undefined' ||
-      this.firstname === 'null'
-    ) {
-
-      this.firstname = 'test';
-
-    }
-
-    // =========================================
-
-
-    // =========================================
-    // Session Validation
-    // =========================================
-    if (
-      !this.phone ||
-      !this.stepsNumber
-    ) {
-
-      this.router.navigate(['/otp']);
-
-      return;
-
-    }
-
-    // =========================================
-    // Generate Transaction ID
-    // =========================================
-    this.txnid =
-      this.generateTxnId();
-
-    // =========================================
-    // Generate Order ID
-    // =========================================
-    this.orderID =
-      this.generateOrderId();
-
-    // =========================================
-    // Save IDs
-    // =========================================
-    this.storageService.set(
-      'txnid',
-      this.txnid
-    );
-
-    this.storageService.set(
-      'order_id',
-      this.orderID
-    );
-
-    // =========================================
-    // Success URL
-    // =========================================
-    this.surl =
-      `${this.apiBaseUrl}/bfaInfo/paymentSuccess`;
-
-    // =========================================
-    // Failure URL
-    // =========================================
-    this.furl =
-      `${this.apiBaseUrl}/bfaInfo/paymentFailure`;
-
-
-
-    // =========================================
-    // Generate Hash
-    // =========================================
-    this.generateHash();
-
   }
 
-  // =========================================
-  // Generate PayU Hash
-  // =========================================
-  generateHash(): void {
+  // =====================================================
+  // Initiate Payment
+  // =====================================================
+  private initiatePayment(): void {
 
     this.loading = true;
 
     const request = {
 
-      txnid:
-        this.txnid,
+      order_id: this.orderId,
 
-      amount:
-        this.amount,
+      //token: this.token,
 
-      productinfo:
-        this.orderID,
+      amount: this.amount,
+      currency: 'INR',
 
-      firstname:
-        this.firstname,
+      billing_name: this.firstname,
+      billing_email: this.email,
+      billing_tel: this.phone,
 
-      email:
-        this.email,
-
-      phone:
-        this.phone
+      billing_address: this.completeAddress,
+      billing_city: this.districtName,
+      billing_state: this.stateName,
+      billing_zip: this.pincode,
+      billing_country: 'India'
 
     };
 
+    console.log('Payment Request', request);
 
-    this.bfaregistrationService
-      .generateHashPost(request)
+    // Enable encryption if required
+     const payload = this.cryptoService.encrypt(request);
+console.log('Payment Request encrypt', payload);
+    this.ccavenueService
+      .Ccavenue(payload)
       .subscribe({
 
         next: (response: any) => {
+console.log('Payment response encrypt', response);
+          this.loading = false;
 
-          console.log(
-            'Hash Response =>',
-            response
-          );
+          //console.log('Payment Response', response);
 
-          if (
-            response &&
-            response.status === true &&
-            response.hash
-          ) {
+          // Enable if API returns encrypted response
+         const result = this.cryptoService.decrypt(response);
 
-            // =========================================
-            // Set Hash
-            // =========================================
-            this.hash =
-              response.hash;
+         // const result = response;
 
-           
+          if (!result?.status) {
 
-            // =========================================
-            // Auto Submit PayU Form
-            // =========================================
-            setTimeout(() => {
+            alert(result?.message || 'Unable to initiate payment.');
 
-              if (
-                this.payuForm &&
-                this.payuForm.nativeElement
-              ) {
-
-                console.log(
-                  'Submitting PayU Form...'
-                );
-
-                this.payuForm
-                  .nativeElement
-                  .submit();
-
-              } else {
-
-                this.loading = false;
-
-                console.error(
-                  'PayU Form Not Found'
-                );
-
-              }
-
-            }, 500);
-
-          } else {
-
-            this.loading = false;
-
-            alert(
-              response.message ||
-              'Hash generation failed'
-            );
+            return;
 
           }
+
+          this.paymentUrl = result.payment_url;
+          this.encRequest = result.encRequest;
+          this.accessCode = result.access_code;
+            this.orderId = result.order_id;
+          this.storageService.set('order_id', this.orderId);
+         // console.log('Payment URL', this.paymentUrl);
+        //  console.log('Access Code', this.accessCode);
+
+          setTimeout(() => {
+
+            if (this.ccavenueForm) {
+              this.ccavenueForm.nativeElement.submit();
+            }
+
+          }, 100);
 
         },
 
@@ -318,13 +192,11 @@ export class PaymentComponent implements OnInit {
 
           this.loading = false;
 
-          console.error(
-            'Hash API Error =>',
-            error
-          );
+          console.error('Payment Error', error);
 
           alert(
-            'Unable to generate hash'
+            error?.error?.message ||
+            'Unable to connect to the payment gateway.'
           );
 
         }
@@ -333,32 +205,28 @@ export class PaymentComponent implements OnInit {
 
   }
 
-  // =========================================
-  // Generate Transaction ID
-  // =========================================
-  generateTxnId(): string {
+  // =====================================================
+  // Generate Order ID
+  // =====================================================
+  private generateOrderId(): string {
 
     return (
-      'TXN' +
+      'ORD' +
       Date.now() +
-      Math.floor(
-        Math.random() * 100000
-      )
+      Math.floor(Math.random() * 100000)
     );
 
   }
 
-  // =========================================
-  // Generate Order ID
-  // =========================================
-  generateOrderId(): string {
+  // =====================================================
+  // Generate Transaction ID
+  // =====================================================
+  private generateTransactionId(): string {
 
     return (
-      'ODR' +
+      'TXN' +
       Date.now() +
-      Math.floor(
-        Math.random() * 100000
-      )
+      Math.floor(Math.random() * 100000)
     );
 
   }

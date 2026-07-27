@@ -36,9 +36,7 @@
           Preview
         </button>
       </div>
-      <div *ngIf="loading" class="loader-overlay">
-          <img src="assets/assetsWeb/images/digi-replay_64px.gif" alt="Loading">
-      </div>
+      
 
     <form [formGroup]="panForm" enctype="multipart/form-data" (ngSubmit)="onVerify()">
       <!-- Tab contents -->
@@ -93,7 +91,7 @@
             <div class="submit-btn">
              
                         <!-- Convert string to number in template -->
-              <button *ngIf="+stepsNumber === 1 " type="submit" class="btn btn-submit">Verify</button>
+              <button *ngIf="+stepsNumber === 2 " type="submit" class="btn btn-submit">Verify</button>
               <div *ngIf="message" [ngClass]="['text-success', errClass]">{{ message }} </div>
             </div>
           </div>
@@ -297,16 +295,16 @@
         <label for="profession_doc">Profession Document Upload (PDF/Image, ≤1 MB)<span>*</span></label>
         <input type="file" accept=".png,.jpg,.jpeg,.webp,.pdf,.doc" (change)="onFileSelected($event, 'profession_doc_name')"  class="form-control" id="profession_doc" formControlName="profession_doc" />
           <div *ngIf="messageFile" class="text-success">{{ messageFile }}</div>
-          <div *ngIf="message" class="text-danger">{{ message }}</div>
+          <div *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</div>
             <input type="hidden" class="form-control" id="profession_doc_name"   formControlName="profession_doc_name" />
 
         <div *ngIf="submitted && pd['profession_doc'].invalid" class="text-danger">
            Profession Document is required.
       </div>
           <!-- Show uploaded file name -->
-          <div *ngIf="fileLoading" class="text-info">
+          <div *ngIf="uploadedFileName" class="text-info">
          Uploaded File:
-              <a [href]="fileBaseURL + uploadedFiles['profession_doc']" target="_blank">View</a>
+              <a [href]="fileURL" target="_blank">View</a>
 
           </div>
 
@@ -369,16 +367,16 @@
         <input type="file" accept=".png,.jpg,.jpeg,.webp,.pdf,.doc" (change)="onFileSelected($event, 'gst_file_name')"  class="form-control" id="gst_file" formControlName="gst_file" />
 
         <div *ngIf="fileErrors['gst_file_name']" class="text-success">{{ messageFile }}</div>
-          <div *ngIf="message" class="text-danger">{{ message }}</div>
+          <div *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</div>
             <input type="hidden" class="form-control" id="gst_file_name"   formControlName="gst_file_name" />
 
         <div *ngIf="submitted && pd['gst_file'].invalid" class="text-danger">
         GST Certificate is required.
       </div>
           <!-- Show uploaded file name -->
-          <div *ngIf="fileLoading" class="text-info">
+          <div *ngIf="uploadedFileName" class="text-info">
          Uploaded File:
-              <a [href]="fileBaseURL + uploadedFiles['gst_file_name']" target="_blank">View</a>
+              <a [href]="fileURL" target="_blank">View</a>
 
           </div>
       </div>
@@ -469,7 +467,7 @@
   (keypress)="onlyNumberInput($event)"
   (input)="profileStatus($event)"
 />
- <div style="padding: 5px;" *ngIf="messagePro" [ngClass]="['text-success', errClass]">{{ messagePro }} </div>
+ <div style="padding: 5px;" *ngIf="messageProf" [ngClass]="['text-success', errClass]">{{ messageProf }} </div>
     </div>
 
     <div class="form-group contact-left col-md-6">
