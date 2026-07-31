@@ -49,6 +49,17 @@ export class BfaregistrationService {
 
         return this.http.post(this.baseUrl+'Bank/validate', body, { headers });
       }
+      getBankList(filters:any): Observable<any> {
+        const headers = new HttpHeaders({
+          'Content-Type': 'application/x-www-form-urlencoded; charset=ISO-8859-1',
+          'Accept-Charset': 'ISO-8859-1',
+          //ss"Authorization": this.API_KEY,
+        });
+
+        const body = filters;     
+
+        return this.http.post(this.baseUrl+'bfaInfo/getBankList', body, { headers });
+      }
       getDataPhonePAN(filters:any): Observable<any> {
         const headers = new HttpHeaders({
           'Content-Type': 'application/x-www-form-urlencoded; charset=ISO-8859-1',

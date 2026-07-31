@@ -218,6 +218,21 @@ button.get-q {
     border-radius: 50px;
     border-top-right-radius: 0px;
 }
+button.get-q1 {
+    background: #2a457f;
+    color: #fff;
+    font-size: 15px;
+    border: none;
+    padding: 14px 30px;
+    font-weight: 500;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: -200px;
+    border-radius: 50px;
+    border-top-right-radius: 0px;
+}
+
 
 .csc-search input.form-control {
     border: none;

@@ -30,11 +30,10 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
 
   panForm!: FormGroup;
   personalDetailsForm!: FormGroup;
-
   activeTab   = '2';
   loading     = false;
   submitted   = false;
-
+   locSend=    false;
   message       = '';
   messagePro    = '';
   messageFile   = '';
@@ -45,7 +44,7 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
   uploadedFiles: Record<string, string>  = {};
   fileErrors:    Record<string, string>  = {};
   fileLoading:   Record<string, boolean> = {};
-
+  bank_list: any[] = [];
   stateList:    any[] = [];
   districtList: any[] = [];
 
@@ -62,7 +61,7 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
 
   // ✅ Flags that track if IFSC / Account verification actually succeeded.
   //    Submission is BLOCKED unless both are true.
-  private bankVerified = false;
+  bankVerified = false;
 
   private destroy$ = new Subject<void>();
 
@@ -76,7 +75,8 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private bfaregistrationService: BfaregistrationService,
-    private storageService: StorageService,private cryptoService: CryptoService,
+    private storageService: StorageService,
+    private cryptoService: CryptoService,
     private router: Router,
   ) {}
 
@@ -89,6 +89,7 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
     this._initPersonalDetailsForm();
     this._checkAuth();
     this.getStates();
+    this.getBanklist();
     this.getBfaInfo();
   }
 
@@ -105,15 +106,16 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
       this.router.navigate(['/otp']);
       return;
     }
-   if (this.payment_status === 'PAID' && this.status ==3) {
+
+    if (this.payment_status === 'PAID' && this.status === 3) {
       this.router.navigate(['/auth/login']);
       return;
     }
+
     if (this.payment_status === 'PAID' || this.stepsNumber > 3) {
       this.router.navigate(['/status']);
       return;
     }
-   
 
     if (this.stepsNumber > 1) {
       this.openTab('3');
@@ -196,7 +198,6 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
       account_type:            ['', Validators.required],
       bank_name:               ['', Validators.required],
       bank_branch:             ['', Validators.required],
-      // ✅ IFSC required + must match format. Disabled until API verifies it (see ifscValidation()).
       ifsc_code:               ['', [Validators.required, Validators.pattern(/^[A-Z]{4}0[A-Z0-9]{6}$/)]],
       account_no:              ['', [Validators.required, Validators.pattern('^[0-9]{9,18}$')]],
       confirm_account_no:      ['', Validators.required],
@@ -217,6 +218,7 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
   // =========================================================
   private _setupFormWatchers(): void {
 
+    // ✅ Higher Education watcher
     this.personalDetailsForm.get('higher_education')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(value => {
@@ -230,6 +232,7 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
         ctrl?.updateValueAndValidity();
       });
 
+    // ✅ GST Registered watcher
     this.personalDetailsForm.get('gst_registered')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(value => {
@@ -251,6 +254,7 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
         gstFile?.updateValueAndValidity();
       });
 
+    // ✅ Reference CSC ID watcher
     this.personalDetailsForm.get('ref_cscid')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(value => {
@@ -275,7 +279,6 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe(() => {
           this.bankVerified = false;
-         // this.personalDetailsForm.patchValue({ bank_name: '', bank_branch: '' }, { emitEvent: false });
         });
     });
   }
@@ -296,7 +299,7 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
   // =========================================================
   getStates(): void {
     this.loading = true;
-    this.bfaregistrationService.getStates({token:this.token})
+    this.bfaregistrationService.getStates({token: this.token})
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -329,12 +332,12 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
     if (!stateCode) return;
 
     this.loading = true;
-    this.bfaregistrationService.getDistrict( this.cryptoService.encrypt({ state: stateCode ,token:token}))
+    this.bfaregistrationService.getDistrict(this.cryptoService.encrypt({ state: stateCode, token: token}))
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           this.loading      = false;
-          this.districtList = response?.data || [];///this.cryptoService.decrypt(response?.data) || [];
+          this.districtList = response?.data || [];
         },
         error: () => {
           this.loading  = false;
@@ -369,7 +372,6 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
     }
 
     this.loading = true;
-    // pass the object directly to match the expected parameter type
     this.bfaregistrationService.profileStatus(this.cryptoService.encrypt({ csc_id: cscId, token: this.token }))
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -408,7 +410,7 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
     this.submitted = true;
     this.message   = '';
 
-    // ✅ BLOCK submit on validation failure — nothing saved
+    // ✅ BLOCK submit on validation failure
     if (this.panForm.invalid) {
       this.panForm.markAllAsTouched();
       this.message  = 'Please fill all required fields correctly.';
@@ -420,7 +422,7 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
 
     const request = { ...this.panForm.value, phone: this.phone, token: this.token };
 
-    this.bfaregistrationService.updatePost( this.cryptoService.encrypt(request))
+    this.bfaregistrationService.updatePost(this.cryptoService.encrypt(request))
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
@@ -440,7 +442,6 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
               }
             });
           } else {
-            // ❌ Backend validation failed — do NOT proceed, show reason
             Swal.fire({
               icon: 'error',
               title: 'Validation Error!',
@@ -468,8 +469,8 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
     this.submitted  = true;
     this.message    = '';
     this.messagePro = '';
-console.log(this.personalDetailsForm.value);
-    // ✅ 1. Angular-level validation (required fields, patterns, account match)
+
+    // ✅ 1. Angular-level validation
     if (this.personalDetailsForm.invalid) {
       this.personalDetailsForm.markAllAsTouched();
 
@@ -479,15 +480,15 @@ console.log(this.personalDetailsForm.value);
 
       this.message  = 'Please fill all required fields correctly.';
       this.errClass = 'text-danger';
-      return; // 🚫 STOP — nothing is sent to the server
+      return;
     }
 
-    // ✅ 2. Business-level validation — bank account must have been verified via API
+    // ✅ 2. Business-level validation — bank must be verified
     if (!this.bankVerified) {
       this.ifscError = this.ifscError || 'Please verify your bank account before submitting.';
       this.message   = 'Please verify your IFSC / account number before submitting.';
       this.errClass  = 'text-danger';
-      return; // 🚫 STOP — nothing is sent to the server
+      return;
     }
 
     this.loading = true;
@@ -501,7 +502,7 @@ console.log(this.personalDetailsForm.value);
       gst_file:       formVal.gst_file_name,
       profession_doc: formVal.profession_doc_name,
     };
-//console.log(request);
+
     this.bfaregistrationService.updatePost(this.cryptoService.encrypt(request))
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -509,19 +510,16 @@ console.log(this.personalDetailsForm.value);
           this.loading   = false;
           this.submitted = false;
 
-          // ✅ Only navigate / treat as saved if backend explicitly confirms
           if (res.status === true) {
             this.message  = 'Personal details submitted successfully!';
             this.errClass = 'text-success';
             this.router.navigate(['/preview']);
           } else {
-            // ❌ Backend rejected the data — show exact reason, stay on page
             this.message  = res.message || 'Please fill all required fields.';
             this.errClass = 'text-danger';
           }
         },
         error: (err) => {
-          // ❌ Network / server error — nothing was saved
           this.loading  = false;
           this.message  = err?.error?.message || 'Error submitting details. Please try again.';
           this.errClass = 'text-danger';
@@ -535,11 +533,10 @@ console.log(this.personalDetailsForm.value);
   getBfaInfo(): void {
     if (!this.phone) return;
     const rest = { phone: this.phone, token: this.token };
-      this.bfaregistrationService.getData(this.cryptoService.encrypt(rest))
+    this.bfaregistrationService.getData(this.cryptoService.encrypt(rest))
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          //console.log(response?.data);
           const data = this.cryptoService.decrypt(response?.data);
           if (!data) return;
 
@@ -551,7 +548,7 @@ console.log(this.personalDetailsForm.value);
           this.storageService.set('status', String(data.status));
           this.storageService.set('pan',    String(data.pan || ''));
 
-          // ✅ Re-check redirect rules now that fresh data has arrived
+          // ✅ Re-check redirect rules
           if (this.payment_status === 'PAID' || this.stepsNumber > 3) {
             this.router.navigate(['/status']);
             return;
@@ -560,7 +557,7 @@ console.log(this.personalDetailsForm.value);
           if (this.stepsNumber > 1) {
             this.openTab('3');
           }
-  
+
           this.panForm.patchValue({
             pan:         data.pan         || '',
             name:        data.name        || '',
@@ -574,7 +571,7 @@ console.log(this.personalDetailsForm.value);
           });
           if (data.mobile) this.panForm.get('phone')?.disable();
 
-          // ✅ If account/IFSC were already saved & verified previously, treat as verified
+          // ✅ If account/IFSC were already saved & verified previously
           if (data.account_no && data.ifsc_code && data.bank_name) {
             this.bankVerified = true;
           }
@@ -605,12 +602,12 @@ console.log(this.personalDetailsForm.value);
             pincode:             data.pincode          || '',
             profession:          data.profession       || '',
             profession_doc_name: data.profession_doc   || '',
-            ref_cscid:           data.ref_cscid         || '',
-            ref_mobile:          data.ref_mobile        || '',
-            ref_name:            data.ref_name          || '',
-            state_code:          data.state_code        || '',
-            state_name:          data.state_name        || '',
-            terms:               data.term_conditions   || '',
+            ref_cscid:           data.ref_cscid        || '',
+            ref_mobile:          data.ref_mobile       || '',
+            ref_name:            data.ref_name         || '',
+            state_code:          data.state_code       || '',
+            state_name:          data.state_name       || '',
+            terms:               data.term_conditions  || '',
           });
 
           if (data.state_code) {
@@ -625,7 +622,7 @@ console.log(this.personalDetailsForm.value);
   }
 
   // =========================================================
-  // ✅ FILE UPLOAD (generic — used for all fields)
+  // ✅ FILE UPLOAD (generic)
   // =========================================================
   onFileSelected(event: any, fieldName: string): void {
     const file: File = event.target.files[0];
@@ -635,17 +632,17 @@ console.log(this.personalDetailsForm.value);
 
     if (!file) {
       this.fileErrors[fieldName] = 'Please select a file.';
-      return; // 🚫 nothing patched into form
+      return;
     }
 
     if (!this.ALLOWED_FILE_TYPES.includes(file.type)) {
       this.fileErrors[fieldName] = 'Only PNG, JPG, WEBP, PDF, and DOC files are allowed.';
-      return; // 🚫 invalid file type never sent to API or form
+      return;
     }
 
     if (file.size > this.MAX_FILE_SIZE) {
       this.fileErrors[fieldName] = 'File size must be less than 1MB.';
-      return; // 🚫 oversized file never sent
+      return;
     }
 
     const reader = new FileReader();
@@ -664,7 +661,6 @@ console.log(this.personalDetailsForm.value);
           next: (res: any) => {
             this.fileLoading[fieldName] = false;
 
-            // ✅ Only patch the form if the upload actually succeeded
             if (res.status) {
               this.uploadedFiles[fieldName] = res.file_name;
               this.personalDetailsForm.patchValue(
@@ -673,13 +669,11 @@ console.log(this.personalDetailsForm.value);
               );
             } else {
               this.fileErrors[fieldName] = res.message || 'Upload failed.';
-              // 🚫 form field left empty — required validator will block submit
             }
           },
           error: () => {
             this.fileLoading[fieldName] = false;
             this.fileErrors[fieldName]  = 'Error uploading file. Please try again.';
-            // 🚫 form field left empty on network error too
           }
         });
     };
@@ -709,7 +703,6 @@ console.log(this.personalDetailsForm.value);
       if (!gstPattern.test(gstNo)) {
         this.messagePro = 'Invalid GST Number format.';
         this.errClass   = 'text-danger';
-        // ✅ Mark control invalid so it can't silently pass form validation
         personalCtrl.setErrors({ invalidGst: true });
         return;
       }
@@ -724,9 +717,10 @@ console.log(this.personalDetailsForm.value);
             this.messagePro = res?.message || (success ? 'GST verified.' : 'Invalid GST Number.');
             this.errClass   = success ? 'text-success' : 'text-danger';
 
-            // ✅ If GST verification fails, mark the control invalid
             if (!success) {
               personalCtrl.setErrors({ gstNotVerified: true });
+            } else {
+              personalCtrl.setErrors(null);
             }
           },
           error: () => {
@@ -741,26 +735,24 @@ console.log(this.personalDetailsForm.value);
 
   // =========================================================
   // ✅ ACCOUNT MATCH + BANK VERIFICATION
-  //    (combined: confirm match locally, then verify with bank API)
   // =========================================================
-  accountMatchValidation(event: Event): void {
-    const target         = event.target as HTMLInputElement;
-    const confirmAccount = target.value?.trim();
+  accountMatchValidation(): void {
+    const confirmAccount = this.personalDetailsForm.get('confirm_account_no')?.value?.trim();
     const accountNo      = this.personalDetailsForm.get('account_no')?.value?.trim();
     const ifscCode       = this.personalDetailsForm.get('ifsc_code')?.value?.trim();
 
     this.confirm_accountError = '';
     this.bankVerified         = false;
 
-    // ✅ Local match check — block immediately if mismatched
+    // ✅ Local match check
     if (!accountNo || accountNo !== confirmAccount) {
       this.confirm_accountError = 'Account numbers do not match.';
       this.personalDetailsForm.get('confirm_account_no')
         ?.setErrors({ accountMismatch: true });
-      return; // 🚫 do not call API with mismatched data
+      return;
     }
 
-    // ✅ Require a valid IFSC before attempting bank verification
+    // ✅ Require valid IFSC
     if (!ifscCode || this.ifscError) {
       this.confirm_accountError = 'Please enter a valid IFSC code first.';
       return;
@@ -779,13 +771,10 @@ console.log(this.personalDetailsForm.value);
           this.submitted = false;
 
           if (res?.status && res?.data) {
-            // ✅ Verified — allow submission, populate bank name/branch
             this.bankVerified = true;
             this.errClass     = 'text-success';
             this.confirm_accountError = '';
-          
           } else {
-            // ❌ Verification failed — block submission
             this.bankVerified = false;
             this.confirm_accountError = res?.message || 'Bank verification failed.';
             this.personalDetailsForm.get('confirm_account_no')
@@ -812,7 +801,6 @@ console.log(this.personalDetailsForm.value);
 
     this.ifscError    = '';
     this.bankVerified  = false;
-    //this.personalDetailsForm.patchValue({ bank_name: '', bank_branch: '' }, { emitEvent: false });
 
     if (!ifscCode) {
       this.personalDetailsForm.get('ifsc_code')?.setErrors({ required: true });
@@ -832,9 +820,42 @@ console.log(this.personalDetailsForm.value);
       return;
     }
 
-    // ✅ Format valid — clear control error, but bank still needs verification
-    //    via accountMatchValidation() before bankVerified becomes true.
     this.personalDetailsForm.get('ifsc_code')?.setErrors(null);
+  }
+
+  // =========================================================
+  // ✅ GET BANK LIST
+  // =========================================================
+  getBanklist(): void {
+    this.loading = true;
+    this.message = '';
+
+    const request = { token: this.token };
+
+    this.bfaregistrationService
+      .getBankList(this.cryptoService.encrypt(request))
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: any) => {
+          this.loading = false;
+
+          if (!response?.status) {
+            this.message = response?.message || 'Unable to load bank list.';
+            this.errClass = 'text-danger';
+            return;
+          }
+
+          const data = this.cryptoService.decrypt(response.data);
+          this.bank_list = data || [];
+        },
+        error: (error: any) => {
+          this.loading = false;
+          this.message =
+            error?.error?.message ||
+            'Error loading bank list. Please try again.';
+          this.errClass = 'text-danger';
+        }
+      });
   }
 
   // =========================================================
@@ -849,10 +870,10 @@ console.log(this.personalDetailsForm.value);
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        this.personalDetailsForm.patchValue({
-          latitude:  position.coords.latitude,
-          longitude: position.coords.longitude
-        });
+        // this.personalDetailsForm.patchValue({
+        //   latitude:  position.coords.latitude,
+        //   longitude: position.coords.longitude
+        // });
         this.sendSMS();
       },
       () => {
@@ -871,17 +892,18 @@ console.log(this.personalDetailsForm.value);
       this.errClass = 'text-danger';
       return;
     }
-
+      this.locSend=false;
     this.bfaregistrationService.sendSMSBFA(this.phone)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
+           this.locSend=true;
           this.message  = 'SMS sent successfully.';
           this.errClass = 'text-success';
         },
         error: () => {
-        //  this.message  = 'Failed to send SMS. Please try again.';
-         // this.errClass = 'text-danger';
+           this.locSend=true;
+          // Silent error
         }
       });
   }
@@ -908,6 +930,14 @@ console.log(this.personalDetailsForm.value);
     this.showProfessionalWork = value === 'Other';
     if (!this.showProfessionalWork) {
       this.personalDetailsForm.patchValue({ other_profational_work: '' });
+      this.personalDetailsForm.get('other_profational_work')?.clearValidators();
+    } else {
+      this.personalDetailsForm.get('other_profational_work')?.setValidators([Validators.required]);
     }
+    this.personalDetailsForm.get('other_profational_work')?.updateValueAndValidity();
+  }
+
+  trackByBank(index: number, bank: any): string {
+    return bank.bank_name;
   }
 }

@@ -72,6 +72,11 @@ export class BfaregistrationComponent implements OnInit, OnDestroy {
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
   ];
   private readonly MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+bankList: any;
+bankList: any;
+bank_list: any;
+bank_list: any;
+bankVerified: boolean;
 
   constructor(
     private fb: FormBuilder,

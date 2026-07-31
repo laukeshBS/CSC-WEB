@@ -1,7 +1,8 @@
 <section class="partner text-center">
   <div class="container">
     <div class="financial-head">
-      <h3>BFA Registration Preview Details</h3>
+      <h3>BFA Registration Details Preview</h3>
+      <p>Please review all the entered information before submitting your application.</p>
     </div>
   </div>
 </section>
@@ -102,7 +103,16 @@
   <!-- TERMS -->
   <div class="card mb-3">
     <div class="card-body">
-      <p><b>Terms Accepted:</b> {{ personalData?.terms ? 'Yes' : 'No' }}</p>
+      <p> <input
+            type="checkbox"
+            id="terms"
+            checked
+            formControlName="terms"
+
+          />
+            I agree to the <a href="/terms-conditions" target="_blank">
+            Terms & Conditions.
+          </a></p>
     </div>
   </div>
 

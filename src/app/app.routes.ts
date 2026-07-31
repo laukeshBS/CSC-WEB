@@ -7,6 +7,7 @@ import { AboutComponent } from './pages/about/about.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { BfaregistrationComponent } from './pages/bfaregistration/bfaregistration.component';
 import { OtpComponent } from './pages/otp/otp.component';
+
 import { StatusComponent } from './pages/bfaregistration/status/status.component';
 import { PreviewComponent } from './pages/bfaregistration/preview/preview.component';
 import { TermsConditionsComponent } from './pages/bfaregistration/terms-conditions/terms-conditions.component';
@@ -14,6 +15,8 @@ import { PaymentComponent } from './pages/bfaregistration/payment/payment.compon
 import { SuccessComponent } from './pages/bfaregistration/payment/success/success.component';
 import { FailureComponent } from './pages/bfaregistration/payment/failure/failure.component';
 import { LoginComponent } from './pages/bfaregistration/auth/login/login.component';
+import { OtpComponent as authOtp } from './pages/bfaregistration/auth/otp/otp.component';
+import { StatusComponent as authStatus } from './pages/bfaregistration/auth/status/status.component';
 import { ChangePasswordComponent } from './pages/bfaregistration/auth/change-password/change-password.component';
 import { ResetPasswordComponent } from './pages/bfaregistration/auth/reset-password/reset-password.component';
 import { ForgotPasswordComponent } from './pages/bfaregistration/auth/forgot-password/forgot-password.component';
@@ -105,6 +108,16 @@ export const routes: Routes = [
     path: 'auth/forgot-password',
     title: 'CSC Loan Bazar | Forgot Password ',
     component: ForgotPasswordComponent
+  },
+  {
+    path: 'auth/otp',
+    title: 'CSC Loan Bazar | OTP ',
+    component: authOtp
+  },
+  {
+    path: 'auth/status',
+    title: 'CSC Loan Bazar | Status ',
+    component: authStatus
   },
   {
     path: 'web-new/otp',

@@ -22,6 +22,18 @@ sendOtpServices(filters: any): Observable<any> {
 
      return this.http.post(`${this.baseUrl}/otp/send`, body, { headers });
    }
+   getCaptcha(): Observable<any> {
+     const headers = new HttpHeaders({
+       'Content-Type': 'application/x-www-form-urlencoded; charset=ISO-8859-1',
+
+       'Accept-Charset': 'ISO-8859-1',
+       //ss"Authorization": this.API_KEY,
+     });
+
+   
+
+     return this.http.get(`${this.baseUrl}otp/getCaptcha`, { headers });
+   }
    validateOtp(filters:any): Observable<any> {
      const headers = new HttpHeaders({
        'Content-Type': 'application/x-www-form-urlencoded; charset=ISO-8859-1',

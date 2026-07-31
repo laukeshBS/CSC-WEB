@@ -18,39 +18,6 @@
       <div class="col-md-4">
         <div class="otp-container">
 
-          <div *ngIf="!otpSent" class="form-group">
-            <label>Enter Phone Number</label>
-            <input  style="text-align: center;"
-              type="text"
-              maxlength="14"
-              [(ngModel)]="phone" (keypress)="keyPress($event)"
-              (input)="formatPhone()" (keypress)="onlyNumberInput($event)"
-            />
-            <div class="captcha-box">
-              <input type="hidden" name="captcha_id" [value]="captchaId">
-              <input type="hidden" name="token_key" [value]="token_key">
-              
-
-    <span  style="float: left;">  <img
-        [src]="captchaImage"
-        alt="Captcha"
-        class="captcha-image"></span>
-
-    <button  style="float: right; width: auto;" type="button" class="btn btn-secondary btn-sm"
-            (click)="loadCaptcha()"><i class="fa-solid fa-arrows-rotate"></i> 
-        Refresh
-    </button>
-
-</div>
-
-<input
-type="text" style="text-align: center;"  maxlength="6"
-[(ngModel)]="captcha">
-
-            <button (click)="sendOtp()" [disabled]="loading">
-              {{ loading ? 'Sending...' : 'Send OTP' }}
-            </button>
-          </div>
 
           <!-- OTP STEP -->
           <div *ngIf="otpSent" class="form-group">

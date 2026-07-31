@@ -1,24 +1,10 @@
-import {
-  Component,
-  OnInit
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 
-import {
-  CommonModule
-} from '@angular/common';
-
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink
-} from '@angular/router';
-
-import {
-  StorageService
-} from '../../../../core/storage.service';
+import { StorageService } from '../../../../core/storage.service';
 import { CcavenueService } from '../../../../core/services/ccavenue.service';
 import { CryptoService } from '../../../../core/services/crypto.service';
-
 
 @Component({
   selector: 'app-success',
@@ -30,119 +16,116 @@ import { CryptoService } from '../../../../core/services/crypto.service';
   templateUrl: './success.component.html',
   styleUrls: ['./success.component.css']
 })
-export class SuccessComponent
-  implements OnInit { txnid: string = '';
-      todayDate: Date = new Date();
+export class SuccessComponent implements OnInit {
 
+  todayDate = new Date();
 
-  mihpayid: string = '';
+  txnid = '';
+  mihpayid = '';
+  status = '';
+  amount = '';
+  firstname = '';
+  email = '';
+  phone = '';
+  mode = '';
 
-  status: string = '';
+  loading = false;
+  error = '';
 
-  amount: string = '';
+  orderId = '';
 
-  firstname: string = '';
-
-  email: string = '';
-
-  phone: string = this.storageService.get('userPhone') || '';
-
-  mode: string = '';
-  orderId: string = this.storageService.get('order_id') || '';
-  loading: boolean | undefined;
-  error: string | undefined;
-
-  constructor(  private route: ActivatedRoute,
-
-    private ccavenueService:
-      CcavenueService, private storageService: StorageService,private cryptoService: CryptoService, private router: Router,
+  constructor(
+    private ccavenueService: CcavenueService,
+    private storageService: StorageService,
+    private cryptoService: CryptoService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
 
-     // this.orderId = this.route.snapshot.queryParamMap.get('order_id') ?? '';
-      if (!this.phone) {
-          this.router.navigate(['/otp']);
-          return;
-        }
+    this.phone = this.storageService.get('userPhone') || '';
+    this.orderId = this.storageService.get('order_id') || 'ORD1785231626021675';
 
-      if (this.orderId) {
-        this.getPaymentData();
-      } else {
-        console.error('Order ID not found.');
-        this.error = 'Order ID not found.';
-      }
+    if (!this.orderId) {
+      this.error = 'Order ID not found.';
+      return;
+    }
+
+    this.getPaymentData();
 
   }
 
-
-
-
-
-  // =========================================
-  // Get Payment Data
-  // =========================================
   getPaymentData(): void {
-  const request = { order_id: this.orderId,token: localStorage.getItem('otpToken') || ''};
-   this.ccavenueService.getPayment(this.cryptoService.encrypt(request))
-   // this.ccavenueService.getPayment(request)
+
+    this.loading = true;
+
+    const request = {
+      order_id: this.orderId,
+      token: localStorage.getItem('otpToken') || ''
+    };
+
+    console.log('Request =>', request);
+
+    this.ccavenueService
+      .getPayment(this.cryptoService.encrypt(request))
       .subscribe({
 
-        next: (response: any) => {
+        next: (res: any) => {
 
-       response=  this.cryptoService.decrypt(response);
+          this.loading = false;
 
-          if (
-            response &&
-            response.status === true
-          ) {
+         // console.log('Encrypted Response =>', res);
 
-            const data =response.data;
-            console.log('Payment Datasss:', data.order_id);
-            this.txnid =
-              data.order_id || '';
+          const response = this.cryptoService.decrypt(res.data);
 
-            this.mihpayid =
-              data.tracking_id || '';
+         // console.log('Decrypted Response =>', response);
+//console.log('Payment Data:', response.status);
+          if (!response) {
 
-            this.status =
-              data.order_status || '';
-
-            this.amount =
-              data.amount || '';
-
-            this.firstname =
-              data.billing_name || '';
-
-            this.email =
-              data.billing_email || '';
-
-            this.phone =
-              data.phone || '';
-
-            this.mode =
-              data.payment_mode || '';
+            this.error = response?.message || 'Payment details not found.';
+            return;
 
           }
 
+          const data = response;
+          
+          this.txnid = data.order_id ?? '';
+          this.mihpayid = data.tracking_id ?? '';
+          this.status = data.order_status ?? '';
+          this.amount = data.amount ?? '';
+          this.firstname = data.billing_name ?? '';
+          this.email = data.billing_email ?? '';
+          this.phone = data.phone ?? '';
+          this.mode = data.payment_mode ?? '';
+
         },
 
-        error: (error: any) => {
+        error: (err) => {
 
-          console.error(
-            'Payment Data Error =>',
-            error
-          );
+          this.loading = false;
+
+          console.error('API Error', err);
+
+          console.error('Status :', err.status);
+          console.error('Status Text :', err.statusText);
+          console.error('URL :', err.url);
+          console.error('Message :', err.message);
+          console.error('Error Body :', err.error);
+
+          this.error = 'Unable to fetch payment details.';
 
         }
 
       });
 
   }
-// =====================================
-// Print Invoice
-// =====================================
-printInvoice(): void {
+
+  printInvoice1(): void {
+
+    window.print();
+
+  }
+  printInvoice(): void {
 
   const printContents =
     document.getElementById(
@@ -244,4 +227,6 @@ printInvoice(): void {
   }
 
 }
+
+
 }

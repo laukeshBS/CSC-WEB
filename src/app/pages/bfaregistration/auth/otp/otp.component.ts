@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { OtpService } from '../../core/services/otp.service';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { StorageService } from '../../core/storage.service';
-import { CryptoService } from '../../core/services/crypto.service';
+
 import { request } from 'http';
+import { StorageService } from '../../../../core/storage.service';
+import { OtpService } from '../../../../core/services/otp.service';
+import { CryptoService } from '../../../../core/services/crypto.service';
 
 @Component({
   selector: 'app-otp',
@@ -15,9 +17,6 @@ import { request } from 'http';
   styleUrl: './otp.component.css'
 })
 export class OtpComponent implements OnInit {
-  captchaText='';
-captchaId='';
-token_key='';
   phone = '';
   otpSent = false;
   otpExpired = false;
@@ -25,7 +24,6 @@ token_key='';
   timerInterval: any;
   message = '';
   error = '';
-  captcha: any;
   loading = false;
   otpSendCount = 0; // ✅ Track how many times OTP was sent
 
@@ -33,46 +31,18 @@ token_key='';
   otpDigits: string[] = ['', '', '', '', '', ''];
   mobile: string | null | undefined;
   token: string | null | undefined;
-captchaImage: any;
 
   constructor(private storageService : StorageService ,private otpService: OtpService,private cryptoService: CryptoService, private router: Router) {}
   ngOnInit(): void {
 
-         this.storageService.clear('userPhone');
-         this.loadCaptcha();
+         this.phone = this.storageService.get('userPhone') || '';
+         this.sendOtp() ;
   }
 
   /** Step 1: Send OTP (max 3 times) */
   sendOtp() {
-   // alert(this.otpSendCount);
-    if (this.otpSendCount >= 3) {
-      this.message = 'You have reached the maximum OTP limit (3 times).';
-      this.error = 'error';
-      return;
-    }
-
-    if (!this.phone || this.phone.trim() === '') {
-      this.message = 'Phone number is required.';
-      this.error = 'error';
-      return;
-    }
-   if (this.phone) {
-     this.phone = this.phone.replace(/^\+?91\s?/, '').replace(/\D/g, '');
-
-// Keep only the last 10 digits (safety)
- this.phone =  this.phone.slice(-10);
-
-    }
-    if (!/^[0-9]{10}$/.test(this.phone)) {
-      this.message = 'Enter a valid 10-digit phone number.';
-      this.error = 'error';
-      return;
-    }
-   if (!this.validateCaptcha()) {
-        return;
-    }
-
-    const filters = { phone: this.phone,captcha: this.captcha, captcha_id: this.captchaId,token_key:this.token_key };
+  
+    const filters = { phone: this.phone };
 
     this.otpService.sendOtpServices( this.cryptoService.encrypt(filters)).subscribe({
       next: (res) => {
@@ -104,45 +74,9 @@ captchaImage: any;
     });
   }
 
-formatPhone() {
-  // Remove all non-digit characters
-  let digits = this.phone.replace(/\D/g, '');
 
-  // If it already starts with '91', keep it
-  if (digits.startsWith('91')) {
-    this.phone = '+91 ' + digits.slice(2);
-  } else {
-    // Add '+91' if not present
-    this.phone = '+91 ' + digits;
-  }
 
-  // Limit to 10 digits after +91
-  if (digits.length > 10 && digits.startsWith('91')) {
-    this.phone = '+91 ' + digits.slice(2, 12);
-  }
-}
-
- keyPress(event: any) {
-    const pattern = /[0-9\+\-\ ]/;
-
-    let inputChar = String.fromCharCode(event.charCode);
-    if (event.keyCode != 8 && !pattern.test(inputChar)) {
-      event.preventDefault();
-    }
-  }
-
-loadCaptcha()
-{
-    this.otpService.getCaptcha().subscribe(res=>{
-        res= this.cryptoService.decrypt(res.data);
-        
-        this.captchaText=res.captcha;
-        this.token_key=res.token_key;
-        this.captchaImage=res.image;
-        this.captchaId=res.captcha_id;
-
-    });
-}
+ 
   /** Step 2: Validate OTP */
   validateOtp() {
   const otp = this.otpDigits.join('');
@@ -189,16 +123,12 @@ loadCaptcha()
         clearInterval(this.timerInterval);
 
         // ✅ Delay navigation slightly (important fix)
-        if(status === 3 && is_password_set === 0) {
+        if(status === 3) {
               setTimeout(() => {
                 this.router.navigate(['/auth/forgot-password']);
              }, 100);
         }
-         if(status === 3 && is_password_set === 1) {
-              setTimeout(() => {
-                this.router.navigate(['/auth/login']);
-             }, 100);
-         }
+        
          if(status < 3) {
             setTimeout(() => {
               this.router.navigate(['/bfaregistration']);
@@ -297,28 +227,7 @@ showTemporaryMessage(msg: string) {
   }, 30000); // hide after 30 seconds
 }
 
-validateCaptcha(): boolean {
 
-  const captcha = (this.captcha || '').trim().toUpperCase();
-
-  if (!captcha) {
-
-    this.message = 'Please enter the CAPTCHA.';
-    this.error = 'error';
-
-    return false;
-  }
-
-  if (!/^[A-Z0-9]{6}$/.test(captcha)) {
-
-    this.message = 'CAPTCHA must contain exactly 6 letters or numbers.';
-    this.error = 'error';
-
-    return false;
-  }
-
-  return true;
-}
 
 
 

@@ -1,0 +1,79 @@
+.become-partner {
+    background: #F0FAF9;
+    padding: 60px;
+    border-radius: 5%;
+    margin-bottom: 30px;
+}
+.limit-warning {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.otp-container {
+
+  padding: 25px;
+  background: #fff;
+  box-shadow: 0 0 10px #ccc;
+  border-radius: 10px;
+  text-align: center;
+}
+
+input {
+  outline: none;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px;
+  width: 100%;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #aaa;
+}
+
+.otp-inputs {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+}
+
+.otp-inputs input {
+  margin: 1.5px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.timer {
+  margin-top: 10px;
+  color: #007bff;
+}
+
+.error {
+  color: rgb(206, 17, 17) !important;
+  margin-top: 10px;
+}
+
+.message {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #333;
+}
+.become-partner {
+    border-radius: 40px;
+    margin: 40px 0px 40px 0px;
+}
+.financial-head h3 {
+    text-align: center;
+}
